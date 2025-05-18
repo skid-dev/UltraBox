@@ -1,0 +1,56 @@
+#schoolbox-launcher {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 1rem;
+}
+
+#schoolbox-launcher-search {
+    margin: 0;
+}
+
+#schoolbox-launcher-results-wrapper {
+    position: relative;
+    background: linear-gradient(to bottom right, #8e44ad, #3498db);
+    padding: 2px;
+    display: none;
+}
+
+#schoolbox-launcher-results {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background-color: white;
+}
+
+.ultrabox-launcher-item-image {
+    width: 40px;
+    height: 40px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 1px;
+    margin: 5px 2px 0 4px;
+}
+
+.ultrabox-launcher-item-placeholder-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 1px;
+    margin: 5px 2px 0 4px;
+    text-align: center;    
+}
+
+.ultrabox-launcher-item-parent {
+    display: flex;
+    gap: 4px;
+}
+
+.ultrabox-launcher-item-parent:hover {
+    background-color: #f0f0f0;
+    outline: 1px solid #ccc;
+}
+
+.ultrabox-launcher-item-title {
+    display: flex;
+    gap: 4px;
+}

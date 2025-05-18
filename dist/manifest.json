@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3,
+    "name": "SchoolBox",
+    "version": "1.0",
+    "description": "A Chrome extension for SchoolBox.",
+    "permissions": ["storage", "activeTab", "scripting", "tabs", "alarms", "unlimitedStorage"],
+    "host_permissions": ["<all_urls>"],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "SchoolBox"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": ["inject.css"],
+            "matches": ["<all_urls>"]
+        }
+    ]
+}

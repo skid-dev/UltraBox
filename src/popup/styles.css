@@ -1,0 +1,678 @@
+/* Light Theme (Default) Variables */
+:root {
+    /* Color Variables */
+    --primary-color: #4a86e8;
+    --primary-hover: #3a76d8;
+    --secondary-color: #f1f1f1;
+    --text-primary: #333333;
+    --text-secondary: #555555;
+    --text-muted: #777777;
+    --border-color: #dddd;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9f9f9;
+    --bg-tabs: #eeeeee;
+    --tab-active: #ffffff;
+    --tab-hover: #e5e5e5;
+    --input-focus: rgba(74, 134, 232, 0.25);
+    --scrollbar-track: #f1f1f1;
+    --scrollbar-thumb: #bbbbbb;
+    --scrollbar-thumb-hover: #999999;
+    --box-shadow: rgba(0, 0, 0, 0.1);
+
+    /* Toggle Switch */
+    --toggle-bg-off: #eceff1;
+    --toggle-bg-on: #4a86e8;
+    --toggle-border: #ddd;
+    --toggle-handle-off: #ffffff;
+    --toggle-handle-on: #ffffff;
+    --toggle-transition: all 0.3s cubic-bezier(0.45, 0.05, 0.25, 1.2);
+
+    /* Sizing and Spacing */
+    --border-radius: 4px;
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
+
+    /* Typography */
+    --font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-size-xs: 11px;
+    --font-size-sm: 13px;
+    --font-size-md: 14px;
+    --font-size-lg: 16px;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: 600;
+
+    /* Transitions */
+    --transition-speed: 0.2s;
+}
+
+/* Dark Theme Variables */
+body[data-theme="dark"] {
+    --primary-color: #64b5f6;
+    --primary-hover: #90caf9;
+    --secondary-color: #424242;
+    --text-primary: #f5f5f5;
+    --text-secondary: #e0e0e0;
+    --text-muted: #9e9e9e;
+    --border-color: #5f5f5f;
+    --bg-primary: #2d2d2d;
+    --bg-secondary: #363636;
+    --bg-tabs: #424242;
+    --tab-active: #2d2d2d;
+    --tab-hover: #505050;
+    --input-focus: rgba(100, 181, 246, 0.25);
+    --scrollbar-track: #424242;
+    --scrollbar-thumb: #666666;
+    --scrollbar-thumb-hover: #808080;
+    --box-shadow: rgba(0, 0, 0, 0.3);
+
+    /* Toggle Switch */
+    --toggle-bg-off: #555;
+    --toggle-bg-on: #64b5f6;
+    --toggle-border: #444;
+    --toggle-handle-off: #888;
+    --toggle-handle-on: #ffffff;
+}
+
+body {
+    font-family: var(--font-family);
+    margin: 0;
+    width: 320px;
+    height: 420px;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    box-shadow: 0 1px 3px var(--box-shadow);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+/* Header and Theme Toggle Button */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+}
+
+#theme-toggle {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color var(--transition-speed);
+}
+
+#theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.theme-icon {
+    display: none;
+}
+
+html:not([data-theme="dark"]) .theme-icon.light {
+    display: block;
+}
+
+html[data-theme="dark"] .theme-icon.dark {
+    display: block;
+}
+
+.tabs {
+    display: flex;
+    background-color: var(--bg-tabs);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab-button {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: var(--spacing-md) var(--spacing-lg);
+    transition: all var(--transition-speed) ease;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    flex-grow: 1;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.tab-button:hover {
+    background-color: var(--tab-hover);
+    color: var(--text-primary);
+}
+
+.tab-button.active {
+    background-color: var(--tab-active);
+    color: var(--primary-color);
+    font-weight: var(--font-weight-bold);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.tab-content {
+    padding: var(--spacing-lg);
+    display: none;
+    flex-grow: 1;
+    overflow-y: auto;
+    background-color: var(--bg-primary);
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Add a subtle animation when switching tabs */
+.tab-content {
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h2 {
+    margin-top: 0;
+    font-size: var(--font-size-lg);
+    color: var(--text-primary);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-lg);
+}
+
+.setting,
+.module {
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.setting:hover,
+.module:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.setting::before,
+.module::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--primary-color);
+    opacity: 0;
+    transition: opacity var(--transition-speed);
+}
+
+.setting:hover::before,
+.module:hover::before {
+    opacity: 1;
+}
+
+.setting label,
+.module label {
+    display: inline-block;
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: var(--font-weight-medium);
+}
+
+.setting-container label,
+.module-container label {
+    flex: 1;
+    margin-bottom: 0;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+}
+
+.setting-description,
+.module-description {
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    line-height: 1.4;
+    padding-right: 40px; /* Add space so description doesn't run under toggle switch */
+}
+
+.setting input[type="text"] {
+    width: 100%;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    box-sizing: border-box;
+    transition:
+        border-color var(--transition-speed),
+        box-shadow var(--transition-speed);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.setting input[type="text"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--input-focus);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+/* Hide the default checkbox */
+.setting input[type="checkbox"],
+.module input[type="checkbox"] {
+    display: none;
+}
+
+/* iOS-style toggle switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 26px; /* Reduced from 30px */
+    height: 18px; /* Reduced from 20px */
+    vertical-align: middle;
+    margin-left: 8px; /* Add a bit of spacing between text and toggle */
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--toggle-bg-off);
+    border: 1px solid var(--toggle-border);
+    transition: var(--transition-speed);
+    border-radius: 12px; /* Changed from 34px to be more proportional to size */
+    overflow: hidden; /* Hide any overflow from the handle animation */
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 12px; /* Reduced from 14px */
+    width: 12px; /* Reduced from 14px */
+    left: 2px;
+    bottom: 2px;
+    background-color: var(--toggle-handle-off);
+    transition: var(--transition-speed);
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+input[type="checkbox"]:checked + .toggle-slider {
+    background-color: var(--toggle-bg-on);
+    border-color: var(--toggle-bg-on); /* Added border color change */
+}
+
+input[type="checkbox"]:checked + .toggle-slider:before {
+    transform: translateX(8px); /* Adjusted from 12px */
+    background-color: var(--toggle-handle-on);
+}
+
+/* Create a subtle ripple effect on the toggle when clicked */
+.toggle-slider:active:before {
+    width: 14px; /* Reduced from 16px */
+    height: 14px; /* Reduced from 16px */
+    transform: translate(-1px, -1px);
+    transition: 0.1s;
+}
+
+.toggle-slider,
+.toggle-slider:before {
+    transition: var(--toggle-transition);
+}
+
+/* Make the toggle switch look better in dark mode */
+body[data-theme="dark"] .toggle-slider:before {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* Settings and Modules enhancements */
+#settings,
+#modules {
+    background-color: var(--bg-secondary);
+}
+
+#settings h2,
+#modules h2 {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+}
+
+.setting input[type="text"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--input-focus);
+    outline: none;
+}
+
+/* Scrollbar styling for aesthetics */
+.tab-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: var(--border-radius);
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: var(--border-radius);
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+/* Header and Theme Toggle Button */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+}
+
+#theme-toggle {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color var(--transition-speed);
+}
+
+#theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.theme-icon {
+    display: none;
+}
+
+html:not([data-theme="dark"]) .theme-icon.light {
+    display: block;
+}
+
+html[data-theme="dark"] .theme-icon.dark {
+    display: block;
+}
+
+body {
+    font-family: var(--font-family);
+    margin: 0;
+    width: 320px;
+    height: 420px;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    box-shadow: 0 1px 3px var(--box-shadow);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.tabs {
+    display: flex;
+    background-color: var(--bg-tabs);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab-button {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: var(--spacing-md) var(--spacing-lg);
+    transition: all var(--transition-speed) ease;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    flex-grow: 1;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.tab-button:hover {
+    background-color: var(--tab-hover);
+    color: var(--text-primary);
+}
+
+.tab-button.active {
+    background-color: var(--tab-active);
+    color: var(--primary-color);
+    font-weight: var(--font-weight-bold);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.tab-content {
+    padding: var(--spacing-lg);
+    display: none;
+    flex-grow: 1;
+    overflow-y: auto;
+    background-color: var(--bg-primary);
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Add a subtle animation when switching tabs */
+.tab-content {
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h2 {
+    margin-top: 0;
+    font-size: var(--font-size-lg);
+    color: var(--text-primary);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-lg);
+}
+
+.setting,
+.module {
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.setting:hover,
+.module:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.setting::before,
+.module::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--primary-color);
+    opacity: 0;
+    transition: opacity var(--transition-speed);
+}
+
+.setting:hover::before,
+.module:hover::before {
+    opacity: 1;
+}
+
+.setting label,
+.module label {
+    display: inline-block;
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: var(--font-weight-medium);
+}
+
+.setting-container label,
+.module-container label {
+    flex: 1;
+    margin-bottom: 0;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+}
+
+.setting-description,
+.module-description {
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    line-height: 1.4;
+    padding-right: 40px; /* Add space so description doesn't run under toggle switch */
+}
+
+.setting input[type="text"] {
+    width: 100%;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    box-sizing: border-box;
+    transition:
+        border-color var(--transition-speed),
+        box-shadow var(--transition-speed);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.setting input[type="text"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--input-focus);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.setting input[type="checkbox"],
+.module input[type="checkbox"] {
+    margin-right: var(--spacing-xs);
+    vertical-align: middle;
+    accent-color: var(--primary-color);
+}
+
+/* Settings and Modules enhancements */
+#settings,
+#modules {
+    background-color: var(--bg-secondary);
+}
+
+#settings h2,
+#modules h2 {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+}
+
+.setting input[type="text"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--input-focus);
+    outline: none;
+}
+
+/* Scrollbar styling for aesthetics */
+.tab-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: var(--border-radius);
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: var(--border-radius);
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
