@@ -106,7 +106,7 @@ export function on_input(ev: Event): void {
         return
     }
 
-    let results = fuse.search(input_text)
+    let results = fuse.search(input_text).slice(0, 5)
     console.log("Search results", results)
 
     display_results(

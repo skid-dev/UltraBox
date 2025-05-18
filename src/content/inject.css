@@ -6,19 +6,24 @@ section {
     background-color: #2c2f3a !important;
 }
 
-.information-list>li {
+.information-list > li{
     border-bottom: 1px solid #404656 !important;
 }
 
+.component-action section {
+    border-bottom: 1px solid #404656 !important;
+    border-top: 3px solid #404656 !important;
+}
+
 .logo-wrapper {
-    background-color: #3B3F4A !important;
+    background-color: #3b3f4a !important;
 }
 
 article {
     color: #fff !important;
 }
 
-.nav-wrapper>* {
+.nav-wrapper > * {
     color: #fff !important;
 }
 
@@ -27,15 +32,19 @@ article {
 }
 
 a {
-    color: #63B3ED !important;
+    color: #63b3ed !important;
+}
+
+a:hover {
+    text-decoration: underline !important;
 }
 
 #left-menu {
-    background-color: #3B3F4A !important;
+    background-color: #3b3f4a !important;
 }
 
 .tabs {
-    background-color: #3B3F4A !important;
+    background-color: #3b3f4a !important;
 }
 
 .subheader {
@@ -43,7 +52,7 @@ a {
 }
 
 .meta {
-    color: #E6E9EF !important;
+    color: #e6e9ef !important;
 }
 
 h1 {
@@ -51,14 +60,62 @@ h1 {
 }
 
 .fc-cell-shaded {
-    background-color: #3B3F4A !important;
+    background-color: #3b3f4a !important;
 }
 
-.side-menu-heading-link>a, h3 {
+.side-menu-heading-link > a,
+h3 {
     color: #fff !important;
     font-weight: bold !important;
 }
 
-.off-canvas-list>li>a {
-    color: #E6E9EF !important;
+.off-canvas-list > li > a {
+    color: #e6e9ef !important;
+}
+
+input, textarea, select {
+    background-color: #252833 !important;
+    border-width: 1px !important;
+    border-color: #404656 !important;
+    color: #fff !important;
+}
+
+iframe p,
+iframe span,
+iframe li,
+iframe td {
+    color: #fff !important;
+}
+
+.left-off-canvas-menu ul.off-canvas-list li a:hover {
+    background-color: #003d82 !important;
+    border: 1px solid #4ea1ff !important;
+}
+
+#today > * {
+    color: #fff !important;
+}
+
+input:hover {
+    border: 1px solid #4ea1ff !important;
+}
+
+.fc-event,
+table tr th,
+table tr td {
+    color: #fff !important;
+}
+
+.component-titlebar {
+    background-color: #3b4b63 !important;
+}
+
+.component-titlebar h1,
+.component-titlebar h2,
+.component-titlebar h3 {
+    color: #fff !important;
+}
+
+.editPanel.socialstream-new-post {
+    background-color: #2C2F3A !important;
 }

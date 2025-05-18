@@ -32,7 +32,7 @@ export const poll_feed = async (): Promise<void> => {
         let user_settings = (await chrome.storage.sync.get("settings"))["settings"] as Settings
 
         if (!user_settings.news_rss_feed) {
-            console.error("No RSS feed URL found in settings")
+            console.log("No RSS feed URL found in settings")
             return
         }
 
