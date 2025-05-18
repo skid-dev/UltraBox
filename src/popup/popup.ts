@@ -18,8 +18,8 @@ chrome.storage.sync.get(["settings", "theme"], result => {
     const settings: Settings = result.settings
 
     // Load saved theme or default to light
-    const savedTheme = result.theme || "light"
-    applyTheme(savedTheme)
+    const saved_theme = (result.theme as string) || "light"
+    applyTheme(saved_theme)
 
     mainDomainInput.value = settings.main_domain
     injectCssCheckbox.checked = settings.inject_css
@@ -44,10 +44,12 @@ chrome.storage.sync.get(["settings", "theme"], result => {
 // Theme toggle functionality
 themeToggle.addEventListener("click", e => {
     e.stopImmediatePropagation()
-    const currentTheme = document.body.getAttribute("data-theme") || "light"
-    const newTheme = currentTheme === "light" ? "dark" : "light"
+    const current_theme = document.body.getAttribute("data-theme") || "light"
+    const new_theme = current_theme === "light" ? "dark" : "light"
 
-    applyTheme(newTheme)
+    chrome.storage.sync.set({ theme: new_theme })
+
+    applyTheme(new_theme)
 })
 
 // Apply theme to document
@@ -83,7 +85,9 @@ RssPullFrequencySelect.addEventListener("change", () => {
     chrome.alarms.get("rss_poll", alarm => {
         if (alarm) {
             chrome.alarms.clear("rss_poll")
-            chrome.alarms.create("rss_poll", { periodInMinutes: parseInt(RssPullFrequencySelect.value, 10) })
+            chrome.alarms.create("rss_poll", {
+                periodInMinutes: parseInt(RssPullFrequencySelect.value, 10),
+            })
         }
     })
 })
