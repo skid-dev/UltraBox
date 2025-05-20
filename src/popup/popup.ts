@@ -1,3 +1,4 @@
+import { on_alarm } from "../background/pull_feed"
 import { Settings } from "../types/settings"
 
 const tabs = document.querySelectorAll(".tab-button") as NodeListOf<HTMLButtonElement>
@@ -88,6 +89,7 @@ RssPullFrequencySelect.addEventListener("change", () => {
             chrome.alarms.create("rss_poll", {
                 periodInMinutes: parseInt(RssPullFrequencySelect.value, 10),
             })
+            chrome.alarms.onAlarm.addListener(on_alarm)
         }
     })
 })

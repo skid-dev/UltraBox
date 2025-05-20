@@ -119,3 +119,7 @@ table tr td {
 .editPanel.socialstream-new-post {
     background-color: #2C2F3A !important;
 }
+
+.timetable>thead th {
+    background-color: #3b4b63 !important;
+}

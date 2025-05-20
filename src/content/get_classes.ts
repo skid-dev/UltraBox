@@ -28,9 +28,9 @@ export async function store_classes(): Promise<void> {
     let current_channel_items = (await get_storage.get_news_channel(CLASS_CHANNEL_NAME)).length
     if (current_channel_items === classes.length) { return }
 
-    await set_storage.clear_channel("classes")
+    await set_storage.clear_channel(CLASS_CHANNEL_NAME)
 
     for (let class_item of classes) {
-        await set_storage.add_item_to_channel(CLASS_CHANNEL_NAME, class_item)
+        await set_storage.add_if_not_exists(CLASS_CHANNEL_NAME, class_item.guid, class_item)
     }
 }

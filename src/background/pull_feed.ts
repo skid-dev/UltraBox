@@ -73,7 +73,7 @@ export const poll_feed = async (): Promise<void> => {
     }
 }
 
-const on_alarm = (alarm: chrome.alarms.Alarm): void => {
+export const on_alarm = (alarm: chrome.alarms.Alarm): void => {
     if (alarm.name === "rss_poll") poll_feed()
 }
 
