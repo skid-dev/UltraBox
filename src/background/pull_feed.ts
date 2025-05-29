@@ -77,9 +77,12 @@ export const on_alarm = (alarm: chrome.alarms.Alarm): void => {
     if (alarm.name === "rss_poll") poll_feed()
 }
 
-export async function init_rss_poller(): Promise<void>{
-    let user_settings = (await chrome.storage.sync.get("settings"))["settings"] as Settings
-
-    chrome.alarms.create("rss_poll", { periodInMinutes: user_settings.rss_feed_pull_interval })
-    chrome.alarms.onAlarm.addListener(on_alarm)
+export async function init_rss_poller(): Promise<void> {
+    const user_settings = (await chrome.storage.sync.get("settings"))["settings"] as Settings
+    chrome.alarms.create("rss_poll", {
+        periodInMinutes: user_settings.rss_feed_pull_interval,
+    })
 }
+
+// ensure the alarm listener is always registered when the service worker starts
+chrome.alarms.onAlarm.addListener(on_alarm)
