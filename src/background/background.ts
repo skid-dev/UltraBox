@@ -8,6 +8,18 @@ chrome.runtime.onInstalled.addListener(async () => {
     await init_rss_poller()
 })
 
+// also initialise polling when the extension starts up after a browser restart
+chrome.runtime.onStartup.addListener(() => {
+    init_rss_poller().catch(err =>
+        console.error("Failed to init RSS poller on startup", err)
+    )
+})
+
+// ensure polling is scheduled whenever the service worker loads
+init_rss_poller().catch(err =>
+    console.error("Failed to initialise RSS poller", err)
+)
+
 // Helper to promisify chrome.storage.sync.get for settings
 const get_stored_settings = (): Promise<Settings | undefined> =>
     new Promise(resolve => {
