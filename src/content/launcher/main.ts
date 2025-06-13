@@ -1,7 +1,7 @@
 import Fuse from "fuse.js"
 import * as get_storage from "../../storage/get"
 import { IndexedItem } from "../../types/indexed_item"
-import { lighten } from "../functions/lighten"
+import { display_results } from "./display_results"
 
 // get all the available channels
 let items_index: IndexedItem[] = []
@@ -31,66 +31,25 @@ export async function get_news_channels(): Promise<void> {
     })
 }
 
-function display_results(parent_div: HTMLElement, results: IndexedItem[]): void {
-    parent_div.innerHTML = ""
+function filter_results(search_term: string, results: IndexedItem[]): IndexedItem[] {
+    const first_char = search_term.charAt(0).toLowerCase()
 
-    for (let result of results) {
-        let item_parent = document.createElement("div")
-        item_parent.classList.add("ultrabox-launcher-item-parent")
-
-        if (result.item.colour) {
-            item_parent.style.backgroundColor = lighten(result.item.colour, 0.8)
-        }
-
-        // item image
-        if (result.item.parent === "Your subjects") {
-            let item_image = document.createElement("div")
-            item_image.classList.add("ultrabox-launcher-item-placeholder-image")
-            item_image.style.backgroundColor = result.item.colour || "#a8caff"
-            item_image.innerText = result.item.title[0].toUpperCase()
-
-            item_parent.appendChild(item_image)
-        } else {
-            let item_image = document.createElement("img")
-            item_image.classList.add("ultrabox-launcher-item-image")
-            item_image.src = result.item.image_uri || ""
-            item_image.onerror = () => {
-                item_image.onerror = null
-                item_image.src = "/images/logo.php?logo=skin_logo_square&size=normal"
-            }
-
-            item_parent.appendChild(item_image)
-        }
-
-        let item_details_container = document.createElement("div")
-        item_details_container.classList.add("ultrabox-launcher-item-details-container")
-
-        // title and parent channel
-        let item_title = document.createElement("div")
-        item_title.classList.add("ultrabox-launcher-item-title")
-
-        let item_channel = document.createElement("div")
-        item_channel.classList.add("ultrabox-launcher-item-channel")
-        item_channel.innerText = result.item.parent + " / "
-        item_title.appendChild(item_channel)
-
-        let item_title_link = document.createElement("a")
-        item_title_link.innerText = result.item.title
-        item_title_link.href = result.item.link
-        item_title.appendChild(item_title_link)
-
-        item_details_container.appendChild(item_title)
-
-        // content preview
-        let item_content = document.createElement("div")
-        item_content.classList.add("ultrabox-launcher-item-content")
-        item_content.innerText = result.item.content.slice(0, 200)
-        item_details_container.appendChild(item_content)
-
-        // add to parent div
-        item_parent.appendChild(item_details_container)
-        parent_div.appendChild(item_parent)
+    if (first_char === ".") {
+        results = results.filter(result => {
+            return result.parent_channel === "classes"
+        })
     }
+
+    return results
+}
+
+function process_search_term(search_term: string): [string, string] {
+    // if the first character is a dot, remove it
+    if (search_term.charAt(0) === ".") {
+        return ["Search for subjects only", search_term.slice(1).trim()]
+    }
+
+    return ["", search_term.trim()]
 }
 
 export function on_input(ev: Event): void {
@@ -106,13 +65,28 @@ export function on_input(ev: Event): void {
         return
     }
 
-    let results = fuse.search(input_text).slice(0, 5)
+    let [search_filter_text, processed_search_term] = process_search_term(input_text)
+
+    if (!processed_search_term) {
+        if (search_filter_text.length > 0) {
+            parent_div.innerText = search_filter_text
+            results_wrapper_div.style.display = "block"
+        } else {
+            results_wrapper_div.style.display = "none"
+        }
+        return
+    }
+
+    let results = fuse.search(processed_search_term)
+
+    let filtered_results = filter_results(
+        input_text,
+        results.map(result => result.item)
+    ).slice(0, 5)
+
     console.log("Search results", results)
 
-    display_results(
-        parent_div,
-        results.map(result => result.item)
-    )
+    display_results(parent_div, filtered_results)
     results_wrapper_div.style.display = "block"
 }
 

@@ -1,4 +1,3 @@
-import { on_alarm } from "../background/pull_feed"
 import { Settings } from "../types/settings"
 
 const tabs = document.querySelectorAll(".tab-button") as NodeListOf<HTMLButtonElement>
@@ -79,20 +78,7 @@ mainDomainInput.addEventListener("input", saveSettings)
 injectCssCheckbox.addEventListener("change", saveSettings)
 launcherModuleCheckbox.addEventListener("change", saveSettings)
 newsRssFeedInput.addEventListener("input", saveSettings)
-RssPullFrequencySelect.addEventListener("change", () => {
-    saveSettings()
-
-    // update he chrome alarm for the new fetch frequency
-    chrome.alarms.get("rss_poll", alarm => {
-        if (alarm) {
-            chrome.alarms.clear("rss_poll")
-            chrome.alarms.create("rss_poll", {
-                periodInMinutes: parseInt(RssPullFrequencySelect.value, 10),
-            })
-            chrome.alarms.onAlarm.addListener(on_alarm)
-        }
-    })
-})
+RssPullFrequencySelect.addEventListener("change", saveSettings)
 
 // Tab switching logic
 tabs.forEach(tab => {

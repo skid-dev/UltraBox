@@ -123,3 +123,8 @@ table tr td {
 .timetable>thead th {
     background-color: #3b4b63 !important;
 }
+
+table, th, td {
+    border: 1px solid #404656 !important;
+    border-collapse: collapse;
+  }

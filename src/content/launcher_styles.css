@@ -7,6 +7,7 @@
 
 #schoolbox-launcher-search {
     margin: 0;
+    padding: 25px 5px;
 }
 
 #schoolbox-launcher-results-wrapper {
@@ -37,7 +38,7 @@
     height: 40px;
     border-radius: 1px;
     margin: 5px 2px 0 4px;
-    text-align: center;    
+    text-align: center;
 }
 
 .ultrabox-launcher-item-parent {
@@ -53,4 +54,16 @@
 .ultrabox-launcher-item-title {
     display: flex;
     gap: 4px;
+}
+
+#schoolbox-launcher-background-div {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+}
+
+#schoolbox-launcher-content-div {
+    width: min(900px, 90%);
+    margin-top: 40px;
 }
