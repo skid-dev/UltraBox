@@ -1,0 +1,12 @@
+#ultrabox-news-tabs {
+    width: 100%;
+    display: flex;
+}
+
+#ultrabox-news-category-display {
+    display: 100px;
+}
+
+#ultrabox-news-search {
+    flex-grow: 1;
+}

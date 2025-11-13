@@ -211,6 +211,13 @@ table, th, td {
     transform: translateX(2px);
 }
 
+.ultrabox-launcher-item-parent.ultrabox-launcher-item-active {
+    outline: 1px solid rgba(99, 179, 237, 0.65);
+    outline-offset: -2px;
+    transform: translateX(2px);
+    box-shadow: 0 0 0 1px rgba(99, 179, 237, 0.2) inset;
+}
+
 .ultrabox-launcher-item-parent:not([style*="background"]) {
     background-color: rgba(16, 18, 26, 0.95) !important;
 }
@@ -241,4 +248,8 @@ table, th, td {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
     border-radius: 6px !important;
     background-color: #181a25;
+}
+
+* {
+    border: none !important;
 }

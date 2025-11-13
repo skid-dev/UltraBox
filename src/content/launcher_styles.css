@@ -51,6 +51,12 @@
     outline: 1px solid #ccc;
 }
 
+.ultrabox-launcher-item-parent.ultrabox-launcher-item-active {
+    outline: 2px solid #5a67d8;
+    outline-offset: -2px;
+    background-color: #eef2ff;
+}
+
 .ultrabox-launcher-item-title {
     display: flex;
     gap: 4px;
@@ -75,4 +81,8 @@
 #schoolbox-date-time-display {
     font-size: 1.3em;
     margin-bottom: 20px;
+}
+
+#schoolbox-date-time-display {
+    color: #f8f9ff !important;
 }

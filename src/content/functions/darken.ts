@@ -1,17 +1,46 @@
 export function darken(color: string, percent: number): string {
-    let hex = color.replace("#", "")
-    if (hex.length === 3) {
-        hex = hex
-            .split("")
-            .map(x => x + x)
-            .join("")
+    // clamp helper
+    const clamp = (v: number) => Math.max(0, Math.min(255, Math.round(v)))
+
+    let r: number | null = null
+    let g: number | null = null
+    let b: number | null = null
+
+    const hexLike = color.replace(/\s+/g, "")
+    // hex: #rgb or #rrggbb or plain rrggbb
+    if (/^#?[0-9a-fA-F]{3}$/.test(hexLike) || /^#?[0-9a-fA-F]{6}$/.test(hexLike)) {
+        let hex = hexLike.replace("#", "")
+        if (hex.length === 3) {
+            hex = hex.split("").map(x => x + x).join("")
+        }
+        const num = parseInt(hex, 16)
+        r = (num >> 16) & 0xff
+        g = (num >> 8) & 0xff
+        b = num & 0xff
+    } else {
+        // rgb(...) or rgba(...), support numeric and percentage values
+        const m = color.match(/rgba?\(\s*([\d.]+%?)\s*,\s*([\d.]+%?)\s*,\s*([\d.]+%?)(?:\s*,\s*[\d.]+\s*)?\)/i)
+        if (m) {
+            const parseChannel = (v: string) => {
+                if (v.endsWith("%")) {
+                    return (parseFloat(v) / 100) * 255
+                }
+                return parseFloat(v)
+            }
+            r = parseChannel(m[1])
+            g = parseChannel(m[2])
+            b = parseChannel(m[3])
+        } else {
+            // unknown format: return original
+            return color
+        }
     }
-    const num = parseInt(hex, 16)
-    let r = (num >> 16) - Math.round((num >> 16) * percent)
-    let g = ((num >> 8) & 0x00ff) - Math.round(((num >> 8) & 0x00ff) * percent)
-    let b = (num & 0x0000ff) - Math.round((num & 0x0000ff) * percent)
-    r = Math.max(0, r)
-    g = Math.max(0, g)
-    b = Math.max(0, b)
-    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
+
+    // compute darkened values
+    const dr = clamp((r as number) - (r as number) * percent)
+    const dg = clamp((g as number) - (g as number) * percent)
+    const db = clamp((b as number) - (b as number) * percent)
+
+    const toHex = (v: number) => v.toString(16).padStart(2, "0")
+    return `#${toHex(dr)}${toHex(dg)}${toHex(db)}`
 }

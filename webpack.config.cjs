@@ -14,6 +14,7 @@ module.exports = (env, argv) => {
             background: "./src/background/background.ts",
             content: "./src/content/content.ts",
             get_textbooks: "./src/content/get_textbooks.ts",
+            inject_css_tools: "./src/content/inject_css_tools.ts",
         },
 
         output: {
@@ -86,6 +87,11 @@ module.exports = (env, argv) => {
                         from: "src/content/launcher_styles.css",
                         to: "launcher_styles.css",
                         noErrorOnMissing: false, 
+                    },
+                    {
+                        from: "src/content/news_search/news_search.css",
+                        to: "news_search_styles.css",
+                        noErrorOnMissing: false,
                     }
                 ],
             }),

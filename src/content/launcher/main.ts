@@ -6,6 +6,7 @@ import { display_results } from "./display_results"
 // get all the available channels
 let items_index: IndexedItem[] = []
 let fuse: Fuse<IndexedItem>
+let active_result_index = -1
 
 const RECENCY_DECAY_MS = 1000 * 60 * 60 * 24 * 3 // recency advantage fades over ~3 days
 const MAX_RECENCY_BOOST = 0.15
@@ -79,7 +80,74 @@ function process_search_term(search_term: string): [string, string] {
     return ["", search_term.trim()]
 }
 
-export function on_input(ev: Event): void {
+function get_result_items(): HTMLElement[] {
+    const results_div = document.getElementById("schoolbox-launcher-results")
+
+    if (!results_div) return []
+
+    return Array.from(results_div.getElementsByClassName("ultrabox-launcher-item-parent")) as HTMLElement[]
+}
+
+function clear_active_result(): void {
+    get_result_items().forEach(item => {
+        item.classList.remove("ultrabox-launcher-item-active")
+        item.removeAttribute("aria-selected")
+    })
+
+    active_result_index = -1
+}
+
+function set_active_result(index: number): void {
+    const items = get_result_items()
+
+    if (items.length === 0) {
+        active_result_index = -1
+        return
+    }
+
+    const normalized_index = ((index % items.length) + items.length) % items.length
+
+    items.forEach((item, current_index) => {
+        if (current_index === normalized_index) {
+            item.classList.add("ultrabox-launcher-item-active")
+            item.setAttribute("aria-selected", "true")
+        } else {
+            item.classList.remove("ultrabox-launcher-item-active")
+            item.removeAttribute("aria-selected")
+        }
+    })
+
+    active_result_index = normalized_index
+}
+
+function move_active_result(delta: number): boolean {
+    const items = get_result_items()
+
+    if (items.length === 0) {
+        clear_active_result()
+        return false
+    }
+
+    if (active_result_index === -1) {
+        set_active_result(delta > 0 ? 0 : items.length - 1)
+    } else {
+        set_active_result(active_result_index + delta)
+    }
+
+    return true
+}
+
+function get_active_result_link(): HTMLAnchorElement | null {
+    const items = get_result_items()
+    const current_item =
+        active_result_index >= 0 && active_result_index < items.length
+            ? items[active_result_index]
+            : items[0]
+
+    return (current_item?.querySelector("a") as HTMLAnchorElement | null) ?? null
+}
+
+export async function on_input(ev: Event): Promise<void> {
     const input_text = (ev.target as HTMLInputElement).value
 
     const parent_div = document.getElementById("schoolbox-launcher-results")
@@ -89,6 +157,7 @@ export function on_input(ev: Event): void {
 
     if (!input_text) {
         results_wrapper_div.style.display = "none"
+        clear_active_result()
         return
     }
 
@@ -101,6 +170,7 @@ export function on_input(ev: Event): void {
         } else {
             results_wrapper_div.style.display = "none"
         }
+        clear_active_result()
         return
     }
 
@@ -126,23 +196,45 @@ export function on_input(ev: Event): void {
         weighted: weighted_results,
     })
 
-    display_results(parent_div, filtered_results)
+    await display_results(parent_div, filtered_results)
     results_wrapper_div.style.display = "block"
+
+    if (filtered_results.length > 0) {
+        set_active_result(0)
+    } else {
+        clear_active_result()
+    }
 }
 
 export function on_keydown(ev: KeyboardEvent): void {
     const results_wrapper_div = document.getElementById("schoolbox-launcher-results-wrapper")
-    const results_div = document.getElementById("schoolbox-launcher-results")
 
     if (ev.key === "Escape") {
         if (results_wrapper_div) {
             results_wrapper_div.style.display = "none"
         }
+        clear_active_result()
+        return
+    }
+
+    if (ev.key === "ArrowDown") {
+        if (move_active_result(1)) {
+            ev.preventDefault()
+        }
+    } else if (ev.key === "ArrowUp") {
+        if (move_active_result(-1)) {
+            ev.preventDefault()
+        }
+    } else if (ev.key === "Tab") {
+        const direction = ev.shiftKey ? -1 : 1
+        if (move_active_result(direction)) {
+            ev.preventDefault()
+        }
     } else if (ev.key === "Enter") {
-        // click on the first link in parent_div
-        let first_link = results_div?.getElementsByTagName("a")[0]
-        if (first_link) {
-            first_link.click()
+        const target_link = get_active_result_link()
+        if (target_link) {
+            ev.preventDefault()
+            target_link.click()
         }
     }
 }

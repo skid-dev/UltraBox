@@ -38,6 +38,10 @@ async function check_schoolbox_page(tab_id: number, tab: chrome.tabs.Tab) {
                 target: { tabId: tab_id },
                 files: ["inject.css"],
             })
+            await chrome.scripting.executeScript({
+                target: { tabId: tab_id },
+                files: ["inject_css_tools.js"],
+            })
         } catch (err) {
             console.error("Failed to inject CSS:", err)
         }
@@ -58,6 +62,21 @@ async function check_schoolbox_page(tab_id: number, tab: chrome.tabs.Tab) {
             })
         } catch (err) {
             console.error("Failed to inject content script for launcher:", err)
+        }
+    }
+
+    if (settings.news_search_module) {
+        try {
+            await chrome.scripting.executeScript({
+                target: { tabId: tab_id },
+                files: ["news_search_module.js"],
+            })
+            await chrome.scripting.insertCSS({
+                target: { tabId: tab_id },
+                files: ["news_search_module.css"],
+            })
+        } catch (err) {
+            console.error("Failed to inject content script for news search:", err)
         }
     }
 }
