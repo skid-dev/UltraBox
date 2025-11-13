@@ -7,6 +7,21 @@ import { display_results } from "./display_results"
 let items_index: IndexedItem[] = []
 let fuse: Fuse<IndexedItem>
 
+const RECENCY_DECAY_MS = 1000 * 60 * 60 * 24 * 3 // recency advantage fades over ~3 days
+const MAX_RECENCY_BOOST = 0.15
+
+function get_recency_boost(updated_at?: number): number {
+    if (!updated_at) return 0
+
+    const age_ms = Date.now() - updated_at
+    if (age_ms <= 0) {
+        return MAX_RECENCY_BOOST
+    }
+
+    const decay = Math.exp(-age_ms / RECENCY_DECAY_MS)
+    return MAX_RECENCY_BOOST * decay
+}
+
 export async function get_news_channels(): Promise<void> {
     let all_channels = await get_storage.get_all_news_channels()
     console.log("Indexing channels", all_channels)
@@ -38,6 +53,14 @@ function filter_results(search_term: string, results: IndexedItem[]): IndexedIte
         results = results.filter(result => {
             return result.parent_channel === "classes"
         })
+    } else if (first_char === "/") {
+        results = results.filter(result => {
+            return result.parent_channel === "bob"
+        })
+    } else if (first_char === "!") {
+        results = results.filter(result => {
+            return result.parent_channel === "news"
+        })
     }
 
     return results
@@ -47,6 +70,10 @@ function process_search_term(search_term: string): [string, string] {
     // if the first character is a dot, remove it
     if (search_term.charAt(0) === ".") {
         return ["Search for subjects only", search_term.slice(1).trim()]
+    } else if (search_term.charAt(0) === "/") {
+        return ["Searching for textbooks only", search_term.slice(1).trim()]
+    } else if (search_term.charAt(0) === "!") {
+        return ["Searching for news items only", search_term.slice(1).trim()]
     }
 
     return ["", search_term.trim()]
@@ -79,12 +106,25 @@ export function on_input(ev: Event): void {
 
     let results = fuse.search(processed_search_term)
 
-    let filtered_results = filter_results(
-        input_text,
-        results.map(result => result.item)
-    ).slice(0, 5)
+    let weighted_results = results
+        .map(result => {
+            const base_score = result.score ?? 0
+            const recency_boost = get_recency_boost(result.item.item.updated_at)
 
-    console.log("Search results", results)
+            return {
+                entry: result.item,
+                score: base_score - recency_boost,
+            }
+        })
+        .sort((a, b) => a.score - b.score)
+        .map(result => result.entry)
+
+    let filtered_results = filter_results(input_text, weighted_results).slice(0, 5)
+
+    console.log("Search results", {
+        raw: results,
+        weighted: weighted_results,
+    })
 
     display_results(parent_div, filtered_results)
     results_wrapper_div.style.display = "block"

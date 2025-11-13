@@ -13,6 +13,7 @@ module.exports = (env, argv) => {
             popup: "./src/popup/popup.ts",
             background: "./src/background/background.ts",
             content: "./src/content/content.ts",
+            get_textbooks: "./src/content/get_textbooks.ts",
         },
 
         output: {

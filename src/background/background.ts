@@ -1,11 +1,9 @@
 import { Settings } from "../types/settings"
-import { init_rss_poller } from "./pull_feed"
 import { extract_hostnames } from "./functions/extract_hostname"
 import { init_settings } from "./set_default_settings"
 
 chrome.runtime.onInstalled.addListener(async () => {
     await init_settings()
-    await init_rss_poller()
 })
 
 // Helper to promisify chrome.storage.sync.get for settings
@@ -16,12 +14,10 @@ const get_stored_settings = (): Promise<Settings | undefined> =>
         })
     })
 
-// listen for tab updates, and inject content script if conditions are met
-chrome.tabs.onUpdated.addListener(async (tab_id, _, tab) => {
-    // if (change_info.status !== "complete" || !tab.url) return
-    if (!tab.url) return
-
+async function check_schoolbox_page(tab_id: number, tab: chrome.tabs.Tab) {
     const current_tab_url = tab.url
+    if (!current_tab_url) return
+
     const settings = await get_stored_settings()
 
     if (!settings) return
@@ -64,4 +60,31 @@ chrome.tabs.onUpdated.addListener(async (tab_id, _, tab) => {
             console.error("Failed to inject content script for launcher:", err)
         }
     }
+}
+
+async function check_bob_page(tab_id: number, tab: chrome.tabs.Tab) {
+    const tab_url = tab.url
+
+    console.log(tab_url)
+
+    if (!tab_url) return
+    if (!tab_url.includes(".boxofbooks.io/reader/page/bookbox")) return
+
+    try {
+        await chrome.scripting.executeScript({
+            target: { tabId: tab_id },
+            files: ["get_textbooks.js"],
+        })
+    } catch (err) {
+        console.log("Failed to index BoB page", err)
+    }
+}
+
+// listen for tab updates, and inject content script if conditions are met
+chrome.tabs.onUpdated.addListener(async (tab_id, _, tab) => {
+    // if (change_info.status !== "complete" || !tab.url) return
+    if (!tab.url) return
+
+    await check_schoolbox_page(tab_id, tab)
+    await check_bob_page(tab_id, tab)
 })

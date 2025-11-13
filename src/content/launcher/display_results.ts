@@ -1,15 +1,31 @@
 import { IndexedItem } from "../../types/indexed_item"
 import { lighten } from "../functions/lighten"
+import { darken } from "../functions/darken"
+import { Settings } from "../../types/settings"
 
-export function display_results(parent_div: HTMLElement, results: IndexedItem[]): void {
+// Helper to promisify chrome.storage.sync.get for settings
+const get_stored_settings = (): Promise<Settings | undefined> =>
+    new Promise(resolve => {
+        chrome.storage.sync.get("settings", result => {
+            resolve(result.settings as Settings | undefined)
+        })
+    })
+
+export async function display_results(parent_div: HTMLElement, results: IndexedItem[]): Promise<void> {
     parent_div.innerHTML = ""
+    const stored_settings = await get_stored_settings()
+    const is_dark_mode = stored_settings?.inject_css ?? false
 
     for (let result of results) {
         let item_parent = document.createElement("div")
         item_parent.classList.add("ultrabox-launcher-item-parent")
 
         if (result.item.colour) {
-            item_parent.style.backgroundColor = lighten(result.item.colour, 0.8)
+            if (is_dark_mode) {
+                item_parent.style.backgroundColor = darken(result.item.colour, 0.8)
+            } else {
+                item_parent.style.backgroundColor = lighten(result.item.colour, 0.8)
+            }
         }
 
         // item image

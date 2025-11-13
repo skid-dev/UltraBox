@@ -67,3 +67,12 @@
     width: min(900px, 90%);
     margin-top: 40px;
 }
+
+.Component_Dashboard_GreetingController h1 {
+    margin: 0;
+}
+
+#schoolbox-date-time-display {
+    font-size: 1.3em;
+    margin-bottom: 20px;
+}

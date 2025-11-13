@@ -6,4 +6,5 @@ export interface ItemRecord {
     guid: string
     image_uri: string | null
     colour?: string
+    updated_at?: number
 }

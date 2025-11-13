@@ -14,7 +14,6 @@ export async function init_settings(): Promise<void> {
         main_domain: "",
         inject_css: false,
         launcher_module: true,
-        rss_feed_pull_interval: 10,
         news_rss_feed: "",
     }
     await chrome.storage.sync.set({ settings: initial_settings })

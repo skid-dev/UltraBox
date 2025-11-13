@@ -16,6 +16,19 @@ const parser = new XMLParser({
     // tweaks that help with most RSS feeds
 })
 
+function get_updated_timestamp(item_json: RSSItem): number {
+    if (!item_json.pubDate) {
+        return Date.now()
+    }
+
+    const parsed_date = Date.parse(item_json.pubDate)
+    if (Number.isNaN(parsed_date)) {
+        return Date.now()
+    }
+
+    return parsed_date
+}
+
 function item_to_record(item_json: RSSItem): ItemRecord {
     return {
         title: item_json.title ?? "",
@@ -24,6 +37,7 @@ function item_to_record(item_json: RSSItem): ItemRecord {
         link: item_json.link ?? "",
         guid: item_json.guid ?? "",
         image_uri: find_first_storage_image_link(item_json.description ?? ""),
+        updated_at: get_updated_timestamp(item_json),
     }
 }
 
@@ -57,12 +71,22 @@ export const poll_feed = async (): Promise<void> => {
                     console.error("Failed to add item to channel", item_record)
                     continue
                 }
-            } else if (existing_item?.content !== item_record.content) {
-                // if the item exists, check if the content has changed, and if so
-                // update the item in the storage
-                await set_storage.update_item_properties(STORAGE_KEY, item_record.guid, {
-                    content: item_record.content,
-                })
+            } else {
+                const updates: Partial<ItemRecord> = {}
+
+                if (existing_item.content !== item_record.content) {
+                    updates.content = item_record.content
+                }
+
+                const existing_updated_at = existing_item.updated_at ?? 0
+                if (!existing_item.updated_at || existing_updated_at < (item_record.updated_at ?? 0)) {
+                    updates.updated_at = item_record.updated_at
+                }
+
+                if (Object.keys(updates).length > 0) {
+                    await set_storage.update_item_properties(STORAGE_KEY, item_record.guid, updates)
+                }
+
                 continue
             }
         }
@@ -71,15 +95,4 @@ export const poll_feed = async (): Promise<void> => {
     } catch (err) {
         console.error("rss poll failed", err)
     }
-}
-
-export const on_alarm = (alarm: chrome.alarms.Alarm): void => {
-    if (alarm.name === "rss_poll") poll_feed()
-}
-
-export async function init_rss_poller(): Promise<void>{
-    let user_settings = (await chrome.storage.sync.get("settings"))["settings"] as Settings
-
-    chrome.alarms.create("rss_poll", { periodInMinutes: user_settings.rss_feed_pull_interval })
-    chrome.alarms.onAlarm.addListener(on_alarm)
 }
