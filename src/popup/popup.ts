@@ -5,23 +5,37 @@ const tabContents = document.querySelectorAll(".tab-content") as NodeListOf<HTML
 const themeToggle = document.getElementById("theme-toggle") as HTMLButtonElement
 
 const mainDomainInput = document.getElementById("mainDomain") as HTMLInputElement
-const injectCssCheckbox = document.getElementById("injectCss") as HTMLInputElement
-const launcherModuleCheckbox = document.getElementById("launcherModule") as HTMLInputElement
 const newsRssFeedInput = document.getElementById("newsRssFeed") as HTMLInputElement
-const newsSearchModuleCheckbox = document.getElementById("newsSearchModule") as HTMLInputElement
+
+const settingCheckboxes = Array.from(document.getElementsByClassName("toggle-setting")).map(elem => {
+    const checkbox = elem.querySelector("input[type='checkbox']") as HTMLInputElement
+    console.log(checkbox)
+    return {
+        container: elem as HTMLElement,
+        checkbox: checkbox,
+        key: elem.getAttribute("data-setting-var") as keyof Settings,
+    }
+})
 
 // Load settings
 chrome.storage.sync.get(["settings", "theme"], result => {
     const settings: Settings = result.settings
+    if (!settings) return
+
+    // load input settings
+    mainDomainInput.value = settings.main_domain
+    newsRssFeedInput.value = settings.news_rss_feed
+
+    // load checkbox settings
+    settingCheckboxes.forEach(({ checkbox, key }) => {
+        if (key in settings) {
+            checkbox.checked = settings[key] as boolean
+        }
+    })
 
     // Load saved theme or default to light
     const saved_theme = (result.theme as string) || "light"
     applyTheme(saved_theme)
-
-    mainDomainInput.value = settings.main_domain
-    injectCssCheckbox.checked = settings.inject_css
-    launcherModuleCheckbox.checked = settings.launcher_module
-    newsRssFeedInput.value = settings.news_rss_feed
 })
 
 // Theme toggle functionality
@@ -46,22 +60,27 @@ function applyTheme(theme: string) {
 
 // Save settings function
 const saveSettings = () => {
-    const settings: Settings = {
+    // save input settings
+    let settings: Settings = {
         main_domain: mainDomainInput.value,
-        inject_css: injectCssCheckbox.checked,
-        launcher_module: launcherModuleCheckbox.checked,
         news_rss_feed: newsRssFeedInput.value,
-        news_search_module: newsSearchModuleCheckbox.checked,
     }
+
+    // save checkbox settings
+    settingCheckboxes.forEach(({ checkbox, key }) => {
+        settings[key] = checkbox.checked
+    })
+
     chrome.storage.sync.set({ settings })
 }
 
 // Add event listeners for autosave
 mainDomainInput.addEventListener("input", saveSettings)
-injectCssCheckbox.addEventListener("change", saveSettings)
-launcherModuleCheckbox.addEventListener("change", saveSettings)
 newsRssFeedInput.addEventListener("input", saveSettings)
-newsSearchModuleCheckbox.addEventListener("change", saveSettings)
+
+settingCheckboxes.forEach(({ checkbox }) => {
+    checkbox.addEventListener("change", saveSettings)
+})
 
 // Tab switching logic
 tabs.forEach(tab => {

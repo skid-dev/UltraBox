@@ -1,3 +1,4 @@
+import { add_url_to_recents } from "../storage/viewed_pages"
 import { Settings } from "../types/settings"
 import { extract_hostnames } from "./functions/extract_hostname"
 import { init_settings } from "./set_default_settings"
@@ -69,11 +70,11 @@ async function check_schoolbox_page(tab_id: number, tab: chrome.tabs.Tab) {
         try {
             await chrome.scripting.executeScript({
                 target: { tabId: tab_id },
-                files: ["news_search_module.js"],
+                files: ["news_search_main.js"],
             })
             await chrome.scripting.insertCSS({
                 target: { tabId: tab_id },
-                files: ["news_search_module.css"],
+                files: ["news_search_styles.css"],
             })
         } catch (err) {
             console.error("Failed to inject content script for news search:", err)
@@ -83,8 +84,6 @@ async function check_schoolbox_page(tab_id: number, tab: chrome.tabs.Tab) {
 
 async function check_bob_page(tab_id: number, tab: chrome.tabs.Tab) {
     const tab_url = tab.url
-
-    console.log(tab_url)
 
     if (!tab_url) return
     if (!tab_url.includes(".boxofbooks.io/reader/page/bookbox")) return
@@ -99,6 +98,30 @@ async function check_bob_page(tab_id: number, tab: chrome.tabs.Tab) {
     }
 }
 
+async function track_page_if_in_domain(tab_id: number, tab: chrome.tabs.Tab) {
+    const current_tab_url = tab.url
+    if (!current_tab_url) return
+
+    const settings = await get_stored_settings()
+    if (!settings || !settings.recents_list_module) return
+
+    const { current_domain, main_domain_hostname, is_homepage } = extract_hostnames(
+        current_tab_url,
+        settings.main_domain
+    )
+    if (is_homepage) return
+    if (!main_domain_hostname || !current_domain?.includes(main_domain_hostname)) {
+        return
+    }
+
+    if (!tab.title) return
+
+    // add page URL to recents
+    console.log("[Recents] Adding viewed page to recents:", current_tab_url)
+    add_url_to_recents(current_tab_url, tab.title)
+}
+    
+
 // listen for tab updates, and inject content script if conditions are met
 chrome.tabs.onUpdated.addListener(async (tab_id, _, tab) => {
     // if (change_info.status !== "complete" || !tab.url) return
@@ -106,4 +129,5 @@ chrome.tabs.onUpdated.addListener(async (tab_id, _, tab) => {
 
     await check_schoolbox_page(tab_id, tab)
     await check_bob_page(tab_id, tab)
+    await track_page_if_in_domain(tab_id, tab)
 })

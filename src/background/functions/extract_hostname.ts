@@ -1,3 +1,9 @@
+/**
+ * Extracts the current tab’s hostname, the main domain’s hostname, and whether the current URL is the homepage.
+ * @param current_tab_url - The URL of the current browser tab.
+ * @param main_domain - The main domain configured in settings, optionally including a protocol.
+ * @returns An object containing the current tab’s hostname, the main domain’s hostname, and a flag indicating if the current page is the homepage.
+ */
 export function extract_hostnames(
     current_tab_url: string,
     main_domain: string | undefined

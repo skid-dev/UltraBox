@@ -15,6 +15,7 @@ module.exports = (env, argv) => {
             content: "./src/content/content.ts",
             get_textbooks: "./src/content/get_textbooks.ts",
             inject_css_tools: "./src/content/inject_css_tools.ts",
+            news_search_main: "./src/content/news_search.ts",
         },
 
         output: {

@@ -1,12 +1,29 @@
 #ultrabox-news-tabs {
     width: 100%;
     display: flex;
+    gap: 5px;
+    align-items: center;
+    margin-bottom: 7px;
 }
 
 #ultrabox-news-category-display {
-    display: 100px;
+    font-weight: bold;
+    color: white;
+    background-color: #4287f5;
+    padding: 0 10px;
+    border-radius: 10px;
+    margin: 0 5px;
+    font-size: initial;
 }
 
 #ultrabox-news-search {
     flex-grow: 1;
+    margin: 0;
+}
+
+#ultrabox-news-search-autocomplete {
+    display: none;
+    position: absolute;
+    background-color: white;
+    z-index: 1000;
 }

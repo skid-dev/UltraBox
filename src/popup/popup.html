@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="setting">
-                    <div class="setting-container">
+                    <div class="setting-container toggle-setting" data-setting-var="inject_css">
                         <label for="injectCss">Inject CSS</label>
                         <label class="toggle-switch">
                             <input type="checkbox" id="injectCss" name="injectCss" />
@@ -81,7 +81,7 @@
             <div id="modules" class="tab-content">
                 <h2>Modules</h2>
                 <div class="module">
-                    <div class="setting-container">
+                    <div class="setting-container toggle-setting" data-setting-var="launcher_module">
                         <label for="launcherModule">UltraBox Launcher</label>
                         <label class="toggle-switch">
                             <input type="checkbox" id="launcherModule" name="launcherModule" />
@@ -93,7 +93,7 @@
                     </div>
                 </div>
                 <div class="module">
-                    <div class="setting-container">
+                    <div class="setting-container toggle-setting" data-setting-var="news_search_module">
                         <label for="newsSearchModule">News search</label>
                         <label class="toggle-switch">
                             <input type="checkbox" id="newsSearchModule" name="newsSearchModule" />
@@ -102,6 +102,18 @@
                     </div>
                     <div class="module-description">
                         Adds chips and a search bar to the news heading, instead of tabs.
+                    </div>
+                </div>
+                <div class="module">
+                    <div class="setting-container toggle-setting" data-setting-var="recents_list_module">
+                        <label for="recentsListModule">Recents list</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="recentsListModule" name="recentsListModule" />
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="module-description">
+                        Displays a list of recently viewed pages for quick access.
                     </div>
                 </div>
             </div>

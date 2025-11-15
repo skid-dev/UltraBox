@@ -253,3 +253,8 @@ table, th, td {
 * {
     border: none !important;
 }
+
+/* news search */
+#ultrabox-news-search {
+    background-color: #3b3f4a !important;
+}
