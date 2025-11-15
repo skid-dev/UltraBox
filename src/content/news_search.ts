@@ -115,6 +115,9 @@ function update_results(category_filter: string | null, search_term: string | nu
 }
 
 function run_when_ready() {
+    if (news_tabs_categories.length === 0) {
+        return  // don't load if there are no categories
+    }
     if (document.querySelector("#ultrabox-news-search")) {
         return
     }
