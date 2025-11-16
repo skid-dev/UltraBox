@@ -27,6 +27,8 @@ export async function store_classes(): Promise<void> {
 
     console.log("Fetched classes", classes)
 
+    set_storage.ensure_channel_exists(CLASS_CHANNEL_NAME)
+
     let current_channel_items = (await get_storage.get_news_channel(CLASS_CHANNEL_NAME)).length
     if (current_channel_items === classes.length) { return }
 
