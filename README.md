@@ -1,12 +1,12 @@
 # UltraBox
 
-A Chrome Extension for thr SchoolBox LMS with integrations for the Box of Books (BoB) platform.
+A Chrome extension for the SchoolBox LMS with integrations for the Box of Books (BoB) platform.
 
 ## Features
 
 - Launcher: A search bar for quick access to news articles and classes, as well as textbooks from Box of Books.
-- Dark theme (Beta): Dark theme for the SchoolBox website and its pages (still work in progress)
-- News Chips: replaces boring Schoolbox tabs in the news section with much more elegant chips and a search bar.
+- Dark theme (Beta): Dark theme for the SchoolBox website and its pages (still a work in progress)
+- News Chips: Replaces boring SchoolBox tabs in the news section with much more elegant chips and a search bar.
 
 ### Upcoming
 
