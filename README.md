@@ -16,24 +16,24 @@ A Chrome extension for the SchoolBox LMS with integrations for the Box of Books 
 
 ## Development
 
-- Install dependencies using Bun:
-   ```bash
-   # install dependencies
-   bun install
+Install dependencies using Bun:
+```bash
+# install dependencies
+bun install
 
-   # build
-   bun run build
-   ```
-- For development mode with file watching:
-   ```bash
-   bun run dev
-   ```
+# build
+bun run build
+```
+For development mode with file watching:
+```bash
+bun run dev
+```
 
- - Load the `dist/` directory as an unpacked extension in Chrome to test.
-   1. Open Google Chrome and go to `chrome://extensions/`.
-   2. Enable the Developer Mode toggle in the top right.
-   3. Click on "load unpacked" in the toolbar that appears.
-   4. Navigate to the `dist/` folder in the repository. If you don't see one, follow the instructions above to build the extension.
+Load the `dist/` directory as an unpacked extension in Chrome to test.
+1. Open Google Chrome and go to `chrome://extensions/`.
+2. Enable the Developer Mode toggle in the top right.
+3. Click on "load unpacked" in the toolbar that appears.
+4. Navigate to the `dist/` folder in the repository. If you don't see one, follow the instructions above to build the extension.
 
 ## License
 
