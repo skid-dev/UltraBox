@@ -1,14 +1,16 @@
 # UltraBox
 
-UltraBox is a Chrome extension that enhances the SchoolBox web platform. It injects custom CSS styles, indexes SchoolBox content, and provides a quick search launcher to access news articles and your classes. News items are periodically pulled from a configurable RSS feed and stored locally.
+A Chrome Extension for thr SchoolBox LMS with integrations for the Box of Books (BoB) platform.
 
 ## Features
 
-- Background script polls an RSS feed using `fast-xml-parser` and stores items in `chrome.storage`.
-- Launcher module uses Fuse.js to search across stored items directly on the SchoolBox homepage.
-- Optional CSS injection to apply extra styles to SchoolBox pages.
-- Popup UI for configuring the extension: main domain, RSS feed URL, fetch frequency, and module toggles.
-- Built with TypeScript and bundled with Webpack; uses Bun for scripts.
+- Launcher: A search bar for quick access to news articles and classes, as well as textbooks from Box of Books.
+- Dark theme (Beta): Dark theme for the SchoolBox website and its pages (still work in progress)
+- News Chips: replaces boring Schoolbox tabs in the news section with much more elegant chips and a search bar.
+
+### Upcoming
+
+- Frequently viewed pages: quick access for pages and resources you commonly access, separated by your class periods.
 
 ## Development
 
@@ -39,4 +41,4 @@ Load the `dist/` directory as an unpacked extension in Chrome to test.
 
 ## License
 
-UltraBox is released under the MIT license.
+- MIT license.
