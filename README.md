@@ -29,7 +29,7 @@ A Chrome extension for the SchoolBox LMS with integrations for the Box of Books 
    bun run dev
    ```
 
-Load the `dist/` directory as an unpacked extension in Chrome to test.
+ - Load the `dist/` directory as an unpacked extension in Chrome to test.
 1. Open Google Chrome and go to `chrome://extensions/`.
 2. Enable the Developer Mode toggle in the top right.
 3. Click on "load unpacked" in the toolbar that appears.
