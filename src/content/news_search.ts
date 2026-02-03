@@ -1,16 +1,30 @@
-let news_tabs_categories = Array.from(document.querySelectorAll(".tabs dd>a")).map(i => {
-    return (i as HTMLAnchorElement).innerText.trim()
-})
-console.log(news_tabs_categories)
+type NewsItem = {
+    elem: HTMLLIElement
+    category_string?: string | null
+}
+
+let news_tabs_categories: string[] = []
 const news_tabs_wrapper = document.querySelector("#news-component dl")
-const news_items = Array.from(document.querySelectorAll(".information-list .actions-small-1")).map(
-    elem => {
+let news_items: NewsItem[] = []
+
+function collect_news_categories(): void {
+    news_tabs_categories = Array.from(document.querySelectorAll(".tabs dd>a")).map(i => {
+        return (i as HTMLAnchorElement).innerText.trim()
+    })
+}
+
+function collect_news_items(): void {
+    news_items = Array.from(
+        document.querySelectorAll(".information-list .actions-small-1")
+    ).map(elem => {
         return {
             elem: elem as HTMLLIElement,
             category_string: elem.querySelector(`a[href^="/news?topic"]`)?.textContent.trim(),
         }
-    }
-)
+    })
+}
+
+collect_news_categories()
 
 let current_category = "All"
 
@@ -57,9 +71,11 @@ function set_news_tabs_html() {
             category_elem.innerText = category
             category_elem.addEventListener("click", () => {
                 category_display.innerText = category
+                current_category = category
                 search_input.value = ""
                 news_search_autocomplete.innerHTML = ""
                 news_search_autocomplete.style.display = "none"
+                update_results(category, null)
             })
             news_search_autocomplete.appendChild(category_elem)
         }
@@ -97,6 +113,14 @@ function set_news_tabs_html() {
 }
 
 function update_results(category_filter: string | null, search_term: string | null) {
+    if (news_items.length === 0) {
+        collect_news_items()
+    }
+
+    if (news_items.length === 0) {
+        return
+    }
+
     for (let news_item of news_items) {
         let show_item = true
         if (category_filter && category_filter !== "All") {
@@ -114,20 +138,36 @@ function update_results(category_filter: string | null, search_term: string | nu
     }
 }
 
-function run_when_ready() {
+function run_when_ready(): boolean {
     if (news_tabs_categories.length === 0) {
-        return  // don't load if there are no categories
+        collect_news_categories()
     }
+
+    if (news_tabs_categories.length === 0) {
+        return false  // don't load if there are no categories yet
+    }
+
     if (document.querySelector("#ultrabox-news-search")) {
-        return
+        return true
     }
-    if (!document.querySelector(".information-list .skeleton")) {
-        // don't load before news items have loaded in
-        set_news_tabs_html()
+
+    const is_loading = document.querySelector(".information-list .skeleton")
+    if (is_loading) {
+        return false
     }
+
+    collect_news_items()
+
+    if (news_items.length === 0) {
+        return false
+    }
+
+    set_news_tabs_html()
+    return true
 }
 
 let run_interval = setInterval(() => {
-    run_when_ready()
-    clearInterval(run_interval)
+    if (run_when_ready()) {
+        clearInterval(run_interval)
+    }
 }, 500)
