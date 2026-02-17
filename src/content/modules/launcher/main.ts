@@ -1,6 +1,6 @@
 import Fuse from "fuse.js"
-import * as get_storage from "../../storage/get"
-import { IndexedItem } from "../../types/indexed_item"
+import * as get_storage from "../../../storage/get"
+import { IndexedItem } from "../../../types/indexed_item"
 import { display_results } from "./display_results"
 
 // get all the available channels
@@ -10,6 +10,7 @@ let active_result_index = -1
 
 const RECENCY_DECAY_MS = 1000 * 60 * 60 * 24 * 3 // recency advantage fades over ~3 days
 const MAX_RECENCY_BOOST = 0.15
+const MAX_BOUNCE_RATE_BOOST = 0.15
 
 function get_recency_boost(updated_at?: number): number {
     if (!updated_at) return 0
@@ -21,6 +22,21 @@ function get_recency_boost(updated_at?: number): number {
 
     const decay = Math.exp(-age_ms / RECENCY_DECAY_MS)
     return MAX_RECENCY_BOOST * decay
+}
+
+function get_bounce_rate_boost(item: IndexedItem): number {
+    if (!item.item.view_count || item.item.bounce_count === undefined) return 0
+
+    const views = Math.max(item.item.view_count ?? 0, 0)
+    const bounces = Math.max(item.item.bounce_count ?? 0, 0)
+
+    if (views === 0) return 0
+
+    const bounce_rate = Math.min(1, bounces / views) // 0..1
+    const engagement_score = 1 - bounce_rate // higher is better
+    const confidence = 1 - Math.exp(-views / 25) // reduces noise from low sample size
+
+    return MAX_BOUNCE_RATE_BOOST * engagement_score * confidence
 }
 
 export async function get_news_channels(): Promise<void> {
@@ -47,24 +63,18 @@ export async function get_news_channels(): Promise<void> {
     })
 }
 
-function filter_results(search_term: string, results: IndexedItem[]): IndexedItem[] {
+function is_valid_result(search_term: string, result: IndexedItem): boolean {
     const first_char = search_term.charAt(0).toLowerCase()
 
     if (first_char === ".") {
-        results = results.filter(result => {
-            return result.parent_channel === "classes"
-        })
+        return result.parent_channel === "classes"
     } else if (first_char === "/") {
-        results = results.filter(result => {
-            return result.parent_channel === "bob"
-        })
+        return result.parent_channel === "bob"
     } else if (first_char === "!") {
-        results = results.filter(result => {
-            return result.parent_channel === "news"
-        })
+        return result.parent_channel === "news"
     }
 
-    return results
+    return true
 }
 
 function process_search_term(search_term: string): [string, string] {
@@ -85,7 +95,9 @@ function get_result_items(): HTMLElement[] {
 
     if (!results_div) return []
 
-    return Array.from(results_div.getElementsByClassName("ultrabox-launcher-item-parent")) as HTMLElement[]
+    return Array.from(
+        results_div.getElementsByClassName("ultrabox-launcher-item-parent")
+    ) as HTMLElement[]
 }
 
 function clear_active_result(): void {
@@ -177,19 +189,29 @@ export async function on_input(ev: Event): Promise<void> {
     let results = fuse.search(processed_search_term)
 
     let weighted_results = results
+        .filter(result => is_valid_result(input_text, result.item))
         .map(result => {
             const base_score = result.score ?? 0
-            const recency_boost = get_recency_boost(result.item.item.updated_at)
+            const recency_boost = get_recency_boost(
+                result.item.item.last_viewed || result.item.item.updated_at
+            )
+            const bounce_rate_boost = get_bounce_rate_boost(result.item)
+            console.log(
+                `Recency boost for item "${result.item.item.title}": ${recency_boost.toFixed(4)} (Percentage of base score: ${((recency_boost / (base_score + 0.0001)) * 100).toFixed(2)}%)`
+            )
+            console.log(
+                `Bounce rate boost for item "${result.item.item.title}": ${bounce_rate_boost.toFixed(4)} (Percentage of base score: ${((bounce_rate_boost / (base_score + 0.0001)) * 100).toFixed(2)}%)`
+            )
 
             return {
                 entry: result.item,
-                score: base_score - recency_boost,
+                score: base_score - recency_boost - bounce_rate_boost,
             }
         })
         .sort((a, b) => a.score - b.score)
         .map(result => result.entry)
 
-    let filtered_results = filter_results(input_text, weighted_results).slice(0, 5)
+    let filtered_results = weighted_results.slice(0, 5)
 
     console.log("Search results", {
         raw: results,

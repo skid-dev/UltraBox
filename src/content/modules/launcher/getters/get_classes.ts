@@ -1,6 +1,6 @@
-import * as set_storage from "../storage/set"
-import * as get_storage from "../storage/get"
-import { ItemRecord } from "../types/item_record"
+import * as set_storage from "../../../../storage/set"
+import * as get_storage from "../../../../storage/get"
+import { ItemRecord } from "../../../../types/item_record"
 
 const CLASS_CHANNEL_NAME = "classes"
 
@@ -18,6 +18,9 @@ export function get_classes(): ItemRecord[] {
             guid: elem.href,
             image_uri: null,
             colour: "#4287f5",
+            view_count: 0,
+            last_viewed: 0,
+            bounce_count: 0,
         }
     })
 }

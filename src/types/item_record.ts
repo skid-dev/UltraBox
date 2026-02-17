@@ -7,4 +7,9 @@ export interface ItemRecord {
     image_uri: string | null
     colour?: string
     updated_at?: number
+
+    // new in v0.2
+    view_count: number
+    last_viewed: number
+    bounce_count: number
 }

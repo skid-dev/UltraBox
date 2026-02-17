@@ -1,6 +1,6 @@
 import { poll_feed } from "../background/pull_feed"
-import { store_classes } from "./get_classes"
-import { get_news_channels, on_input, on_keydown } from "./launcher/main"
+import { store_classes } from "./modules/launcher/getters/get_classes"
+import { get_news_channels, on_input, on_keydown } from "./modules/launcher/main"
 
 console.log("Content script loaded.")
 

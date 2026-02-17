@@ -72,6 +72,55 @@ export async function update_item_properties(
     await chrome.storage.local.set({ [channel_key]: channel_items })
 }
 
+export async function update_item_vc_and_lvt(channel_name: string, item_guid: string): Promise<number | null> {
+    const channel_key = `news_channel_${channel_name}`
+    const channel_data = await chrome.storage.local.get(channel_key)
+
+    // Check if the channel exists
+    if (!channel_data[channel_key]) {
+        console.error(`Channel ${channel_name} does not exist.`)
+        return null
+    }
+
+    let channel_items: ItemRecord[] = channel_data[channel_key] || []
+    
+    // Increment the view count for the specified item
+    let updated_view_count: number | null = null
+    channel_items = channel_items.map(item => {
+        if (item.guid === item_guid) {
+            const new_view_count = (item.view_count || 0) + 1
+            updated_view_count = new_view_count
+            return { ...item, view_count: new_view_count, last_viewed: Date.now() }
+        }
+        return item
+    })
+    await chrome.storage.local.set({ [channel_key]: channel_items })
+    return updated_view_count
+}
+
+export async function increment_item_bounce_count(channel_name: string, item_guid: string): Promise<void> {
+    const channel_key = `news_channel_${channel_name}`
+    const channel_data = await chrome.storage.local.get(channel_key)
+
+    // Check if the channel exists
+    if (!channel_data[channel_key]) {
+        console.error(`Channel ${channel_name} does not exist.`)
+        return
+    }
+
+    let channel_items: ItemRecord[] = channel_data[channel_key] || []
+    
+    // Increment the bounce count for the specified item
+    channel_items = channel_items.map(item => {
+        if (item.guid === item_guid) {
+            const new_bounce_count = (item.bounce_count || 0) + 1
+            return { ...item, bounce_count: new_bounce_count }
+        }
+        return item
+    })
+    await chrome.storage.local.set({ [channel_key]: channel_items })
+}
+
 export async function remove_item_from_channel(channel_name: string, item_guid: string): Promise<void> {
     const channel_key = `news_channel_${channel_name}`
     const channel_data = await chrome.storage.local.get(channel_key)

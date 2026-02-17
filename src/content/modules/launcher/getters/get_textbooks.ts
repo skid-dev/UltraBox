@@ -1,7 +1,6 @@
-import * as set_storage from "../storage/set"
-import * as get_storage from "../storage/get"
-import { TextbookEntry } from "../types/textbook_entry"
-import { ItemRecord } from "../types/item_record"
+import * as set_storage from "../../../../storage/set"
+import { TextbookEntry } from "../../../../types/textbook_entry"
+import { ItemRecord } from "../../../../types/item_record"
 
 const STORAGE_KEY = "bob"
 
@@ -38,6 +37,10 @@ let textbooks = get_textbooks()
             guid: textbook.url,
             image_uri: null,
             colour: "#34a853",
+
+            view_count: 0,
+            last_viewed: 0,
+            bounce_count: 0,
         }
         await set_storage.add_if_not_exists(STORAGE_KEY, textbook.url, item_record)
     }

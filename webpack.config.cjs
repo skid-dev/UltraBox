@@ -13,9 +13,9 @@ module.exports = (env, argv) => {
             popup: "./src/popup/popup.ts",
             background: "./src/background/background.ts",
             content: "./src/content/content.ts",
-            get_textbooks: "./src/content/get_textbooks.ts",
+            get_textbooks: "./src/content/modules/launcher/getters/get_textbooks.ts",
             inject_css_tools: "./src/content/inject_css_tools.ts",
-            news_search_main: "./src/content/news_search.ts",
+            news_search_main: "./src/content/modules/news_search/news_search.ts",
         },
 
         output: {
@@ -90,7 +90,7 @@ module.exports = (env, argv) => {
                         noErrorOnMissing: false, 
                     },
                     {
-                        from: "src/content/news_search/news_search.css",
+                        from: "src/content/modules/news_search//news_search.css",
                         to: "news_search_styles.css",
                         noErrorOnMissing: false,
                     }

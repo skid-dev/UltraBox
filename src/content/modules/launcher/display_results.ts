@@ -1,7 +1,7 @@
-import { IndexedItem } from "../../types/indexed_item"
-import { lighten } from "../functions/lighten"
-import { darken } from "../functions/darken"
-import { Settings } from "../../types/settings"
+import { IndexedItem } from "../../../types/indexed_item"
+import { lighten } from "../../functions/lighten"
+import { darken } from "../../functions/darken"
+import { Settings } from "../../../types/settings"
 
 // Helper to promisify chrome.storage.sync.get for settings
 const get_stored_settings = (): Promise<Settings | undefined> =>
@@ -61,8 +61,10 @@ export async function display_results(parent_div: HTMLElement, results: IndexedI
         item_title.appendChild(item_channel)
 
         let item_title_link = document.createElement("a")
+        const link = new URL(result.item.link)
+        link.searchParams.set("ub_ref", "launcher")
         item_title_link.innerText = result.item.title
-        item_title_link.href = result.item.link
+        item_title_link.href = link.toString()
         item_title.appendChild(item_title_link)
 
         item_details_container.appendChild(item_title)

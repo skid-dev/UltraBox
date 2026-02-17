@@ -38,6 +38,9 @@ function item_to_record(item_json: RSSItem): ItemRecord {
         guid: item_json.guid ?? "",
         image_uri: find_first_storage_image_link(item_json.description ?? ""),
         updated_at: get_updated_timestamp(item_json),
+        view_count: 0,
+        last_viewed: 0,
+        bounce_count: 0
     }
 }
 
