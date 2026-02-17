@@ -207,11 +207,6 @@ export async function on_input(ev: Event): Promise<void> {
 
     let filtered_results = weighted_results.slice(0, 5)
 
-    console.log("Search results", {
-        raw: results,
-        weighted: weighted_results,
-    })
-
     await display_results(parent_div, filtered_results)
     results_wrapper_div.style.display = "block"
 
