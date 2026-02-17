@@ -196,12 +196,6 @@ export async function on_input(ev: Event): Promise<void> {
                 result.item.item.last_viewed || result.item.item.updated_at
             )
             const bounce_rate_boost = get_bounce_rate_boost(result.item)
-            console.log(
-                `Recency boost for item "${result.item.item.title}": ${recency_boost.toFixed(4)} (Percentage of base score: ${((recency_boost / (base_score + 0.0001)) * 100).toFixed(2)}%)`
-            )
-            console.log(
-                `Bounce rate boost for item "${result.item.item.title}": ${bounce_rate_boost.toFixed(4)} (Percentage of base score: ${((bounce_rate_boost / (base_score + 0.0001)) * 100).toFixed(2)}%)`
-            )
 
             return {
                 entry: result.item,
