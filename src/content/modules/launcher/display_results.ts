@@ -11,10 +11,14 @@ const get_stored_settings = (): Promise<Settings | undefined> =>
         })
     })
 
-export async function display_results(parent_div: HTMLElement, results: IndexedItem[]): Promise<void> {
-    parent_div.innerHTML = ""
+export async function display_results(
+    parent_div: HTMLElement,
+    results: IndexedItem[]
+): Promise<void> {
     const stored_settings = await get_stored_settings()
     const is_dark_mode = stored_settings?.inject_css ?? false
+
+    parent_div.innerHTML = ""
 
     for (let result of results) {
         let item_parent = document.createElement("div")
@@ -29,7 +33,7 @@ export async function display_results(parent_div: HTMLElement, results: IndexedI
         }
 
         // item image
-        if (result.item.parent === "Your subjects") {
+        if (result.parent_channel !== "news") {
             let item_image = document.createElement("div")
             item_image.classList.add("ultrabox-launcher-item-placeholder-image")
             item_image.style.backgroundColor = result.item.colour || "#a8caff"
@@ -61,10 +65,15 @@ export async function display_results(parent_div: HTMLElement, results: IndexedI
         item_title.appendChild(item_channel)
 
         let item_title_link = document.createElement("a")
-        const link = new URL(result.item.link)
-        link.searchParams.set("ub_ref", "launcher")
+        let link = null
+        if (result.parent_channel !== "this_textbook") {
+            link = new URL(result.item.link)
+            link.searchParams.set("ub_ref", "launcher")
+            item_title_link.href = link.toString()
+        } else {
+            item_title_link.setAttribute("data-heading-name", result.item.title)
+        }
         item_title_link.innerText = result.item.title
-        item_title_link.href = link.toString()
         item_title.appendChild(item_title_link)
 
         item_details_container.appendChild(item_title)

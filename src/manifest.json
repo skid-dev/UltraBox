@@ -12,6 +12,15 @@
         "default_popup": "popup.html",
         "default_title": "UltraBox"
     },
+    "commands": {
+        "toggle-launcher": {
+            "suggested_key": {
+                "default": "Ctrl+K",
+                "mac": "Command+K"
+            },
+            "description": "Toggle UltraBox Launcher"
+        }
+    },
     "web_accessible_resources": [
         {
             "resources": ["inject.css"],

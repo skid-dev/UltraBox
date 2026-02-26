@@ -3,41 +3,16 @@ import * as get_storage from "../../../storage/get"
 import { IndexedItem } from "../../../types/indexed_item"
 import { display_results } from "./display_results"
 
+// score adjustment functions
+import { get_recency_boost } from "./getters/calculations/recency"
+import { get_bounce_rate_boost } from "./getters/calculations/bounce_rate_boost"
+import { get_textbook_headings } from "./get_textbook_headings"
+
 // get all the available channels
 let items_index: IndexedItem[] = []
 let fuse: Fuse<IndexedItem>
 let active_result_index = -1
-
-const RECENCY_DECAY_MS = 1000 * 60 * 60 * 24 * 3 // recency advantage fades over ~3 days
-const MAX_RECENCY_BOOST = 0.15
-const MAX_BOUNCE_RATE_BOOST = 0.15
-
-function get_recency_boost(updated_at?: number): number {
-    if (!updated_at) return 0
-
-    const age_ms = Date.now() - updated_at
-    if (age_ms <= 0) {
-        return MAX_RECENCY_BOOST
-    }
-
-    const decay = Math.exp(-age_ms / RECENCY_DECAY_MS)
-    return MAX_RECENCY_BOOST * decay
-}
-
-function get_bounce_rate_boost(item: IndexedItem): number {
-    if (!item.item.view_count || item.item.bounce_count === undefined) return 0
-
-    const views = Math.max(item.item.view_count ?? 0, 0)
-    const bounces = Math.max(item.item.bounce_count ?? 0, 0)
-
-    if (views === 0) return 0
-
-    const bounce_rate = Math.min(1, bounces / views) // 0..1
-    const engagement_score = 1 - bounce_rate // higher is better
-    const confidence = 1 - Math.exp(-views / 25) // reduces noise from low sample size
-
-    return MAX_BOUNCE_RATE_BOOST * engagement_score * confidence
-}
+let is_bob = window.location.href.includes(".boxofbooks.io/book/")
 
 export async function get_news_channels(): Promise<void> {
     let all_channels = await get_storage.get_all_news_channels()
@@ -53,6 +28,12 @@ export async function get_news_channels(): Promise<void> {
                 }
             })
         )
+    }
+
+    if (is_bob) {
+        let headings = await get_textbook_headings()
+        console.log("Adding textbook headings to index", headings)
+        items_index = items_index.concat(headings)
     }
 
     fuse = new Fuse(items_index, {
@@ -72,6 +53,8 @@ function is_valid_result(search_term: string, result: IndexedItem): boolean {
         return result.parent_channel === "bob"
     } else if (first_char === "!") {
         return result.parent_channel === "news"
+    } else if (first_char === ":") {
+        return result.parent_channel === "this_textbook"
     }
 
     return true
@@ -85,6 +68,8 @@ function process_search_term(search_term: string): [string, string] {
         return ["Searching for textbooks only", search_term.slice(1).trim()]
     } else if (search_term.charAt(0) === "!") {
         return ["Searching for news items only", search_term.slice(1).trim()]
+    } else if (search_term.charAt(0) === ":") {
+        return ["Searching for headings in this textbook", search_term.slice(1).trim()]
     }
 
     return ["", search_term.trim()]
@@ -159,6 +144,21 @@ function get_active_result_link(): HTMLAnchorElement | null {
     return (current_item?.querySelector("a") as HTMLAnchorElement | null) ?? null
 }
 
+function get_textbook_iframe_doc(): Document | null {
+    const web_viewer: HTMLIFrameElement | null = document.getElementById(
+        "webviewer-1"
+    ) as HTMLIFrameElement
+    if (!web_viewer) {
+        return null
+    }
+    const web_doc = web_viewer.contentDocument || web_viewer.contentWindow?.document
+    if (!web_doc) {
+        return null
+    }
+
+    return web_doc
+}
+
 export async function on_input(ev: Event): Promise<void> {
     const input_text = (ev.target as HTMLInputElement).value
 
@@ -205,7 +205,7 @@ export async function on_input(ev: Event): Promise<void> {
         .sort((a, b) => a.score - b.score)
         .map(result => result.entry)
 
-    let filtered_results = weighted_results.slice(0, 5)
+    let filtered_results = weighted_results.slice(0, 8)
 
     await display_results(parent_div, filtered_results)
     results_wrapper_div.style.display = "block"
@@ -243,6 +243,32 @@ export function on_keydown(ev: KeyboardEvent): void {
         }
     } else if (ev.key === "Enter") {
         const target_link = get_active_result_link()
+
+        if (target_link?.getAttribute("data-heading-name")) {
+            const web_doc = get_textbook_iframe_doc()
+
+            if (!web_doc) {
+                return
+            }
+
+            // find button
+            const heading_text = target_link.getAttribute("data-heading-name")
+            const heading_elements = Array.from(
+                web_doc.querySelectorAll(`.row button.contentButton`)
+            ).filter(
+                el => el.querySelector("span")?.textContent === heading_text
+            ) as HTMLButtonElement[]
+
+            console.log("Navigating to textbook chapter", heading_text, heading_elements)
+
+            if (heading_elements.length > 0) {
+                heading_elements[0].click()
+
+                // close launcher
+                document.getElementById("ultrabox-launcher-background-div")!.style.display = "none"
+            }
+        }
+
         if (target_link) {
             ev.preventDefault()
             target_link.click()

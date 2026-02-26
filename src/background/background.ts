@@ -7,3 +7,6 @@ chrome.tabs.onUpdated.addListener(on_update)
 import { on_open, on_close } from "./events/on_update_track_tab"
 chrome.tabs.onUpdated.addListener(on_open)
 chrome.tabs.onRemoved.addListener(on_close)
+
+import { handle_command } from "./events/commands/launcher"
+chrome.commands.onCommand.addListener(handle_command)

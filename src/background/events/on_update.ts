@@ -2,6 +2,14 @@ import { add_url_to_recents } from "../../storage/viewed_pages"
 import { Settings } from "../../types/settings"
 import { extract_hostnames } from "../functions/extract_hostname"
 
+import dark_theme_css from "./injects/dark_theme_css"
+import launcher from "./injects/launcher"
+import news_search from "./injects/news_search"
+import box_of_books from "./injects/box_of_books"
+import launcher_shortcut from "./injects/launcher_shortcut"
+
+const INJECTS = [dark_theme_css, launcher, news_search, box_of_books, launcher_shortcut]
+
 // additional domains to track, by default, all pages in schoolbox and box of books are tracked.
 const RECENTS_TRACK_DOMAINS = [
     // google drive
@@ -9,10 +17,10 @@ const RECENTS_TRACK_DOMAINS = [
     "docs.google.com",
     "sheets.google.com",
     "slides.google.com",
-    
+
     // microsoft office
     "sharepoint.com",
-    "onedrive.live.com"
+    "onedrive.live.com",
 ]
 
 const get_stored_settings = (): Promise<Settings | undefined> =>
@@ -21,89 +29,6 @@ const get_stored_settings = (): Promise<Settings | undefined> =>
             resolve(result.settings as Settings | undefined)
         })
     })
-
-async function inject_scripts_for_schoolbox_page(tab_id: number, tab: chrome.tabs.Tab) {
-    const current_tab_url = tab.url
-    if (!current_tab_url) return
-
-    const settings = await get_stored_settings()
-
-    if (!settings) return
-
-    const { current_domain, main_domain_hostname, is_homepage } = extract_hostnames(
-        current_tab_url,
-        settings.main_domain
-    )
-
-    if (!main_domain_hostname || !current_domain?.includes(main_domain_hostname)) {
-        return
-    }
-
-    // styles applied for all pages
-    if (settings.inject_css) {
-        try {
-            await chrome.scripting.insertCSS({
-                target: { tabId: tab_id },
-                files: ["inject.css"],
-            })
-            await chrome.scripting.executeScript({
-                target: { tabId: tab_id },
-                files: ["inject_css_tools.js"],
-            })
-        } catch (err) {
-            console.error("Failed to inject CSS:", err)
-        }
-    }
-
-    if (!is_homepage) return
-
-    // home page only modules / styles
-    if (settings.launcher_module) {
-        try {
-            await chrome.scripting.executeScript({
-                target: { tabId: tab_id },
-                files: ["content.js"],
-            })
-            await chrome.scripting.insertCSS({
-                target: { tabId: tab_id },
-                files: ["launcher_styles.css"],
-            })
-        } catch (err) {
-            console.error("Failed to inject content script for launcher:", err)
-        }
-    }
-
-    if (settings.news_search_module) {
-        try {
-            await chrome.scripting.executeScript({
-                target: { tabId: tab_id },
-                files: ["news_search_main.js"],
-            })
-            await chrome.scripting.insertCSS({
-                target: { tabId: tab_id },
-                files: ["news_search_styles.css"],
-            })
-        } catch (err) {
-            console.error("Failed to inject content script for news search:", err)
-        }
-    }
-}
-
-async function inject_scripts_for_bob_page(tab_id: number, tab: chrome.tabs.Tab) {
-    const tab_url = tab.url
-
-    if (!tab_url) return
-    if (!tab_url.includes(".boxofbooks.io/reader/page/bookbox")) return
-
-    try {
-        await chrome.scripting.executeScript({
-            target: { tabId: tab_id },
-            files: ["get_textbooks.js"],
-        })
-    } catch (err) {
-        console.log("Failed to index BoB page", err)
-    }
-}
 
 async function track_page_if_in_domain(tab_id: number, tab: chrome.tabs.Tab) {
     // if no tab url, return
@@ -141,7 +66,27 @@ export default async function on_update(tab_id: number, _: any, tab: chrome.tabs
     // if (change_info.status !== "complete" || !tab.url) return
     if (!tab.url) return
 
-    await inject_scripts_for_schoolbox_page(tab_id, tab)
-    await inject_scripts_for_bob_page(tab_id, tab)
+    const settings = await get_stored_settings()
+    if (!settings) return
+    for (let inject of INJECTS) {
+        // setting check (supports sync or async)
+        if (inject.setting) {
+            const enabled = await Promise.resolve(inject.setting(settings))
+            if (!enabled) continue
+        }
+
+        // condition check (supports sync or async)
+        const condition_valid = await Promise.resolve(inject.condition(tab_id, tab, settings))
+        if (!condition_valid) continue
+
+        // action (supports sync or async)
+        try {
+            await Promise.resolve(inject.action(tab_id, tab, settings))
+        } catch (err) {
+            console.log("Failed to inject scripts for module", err)
+        }
+    }
+
+    // await inject_scripts_for_bob_page(tab_id, tab)
     await track_page_if_in_domain(tab_id, tab)
 }

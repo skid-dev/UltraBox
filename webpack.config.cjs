@@ -6,13 +6,14 @@ module.exports = (env, argv) => {
     const isDevelopment = argv.mode === "development"
 
     return {
-        mode: isDevelopment ? "development" : "production",
+        mode: "production",
         devtool: isDevelopment ? "cheap-module-source-map" : "source-map",
 
         entry: {
             popup: "./src/popup/popup.ts",
             background: "./src/background/background.ts",
             content: "./src/content/content.ts",
+            launcher_shortcut: "./src/content/launch_shortcut.ts",
             get_textbooks: "./src/content/modules/launcher/getters/get_textbooks.ts",
             inject_css_tools: "./src/content/inject_css_tools.ts",
             news_search_main: "./src/content/modules/news_search/news_search.ts",
@@ -87,13 +88,13 @@ module.exports = (env, argv) => {
                     {
                         from: "src/content/launcher_styles.css",
                         to: "launcher_styles.css",
-                        noErrorOnMissing: false, 
+                        noErrorOnMissing: false,
                     },
                     {
-                        from: "src/content/modules/news_search//news_search.css",
+                        from: "src/content/modules/news_search/news_search.css",
                         to: "news_search_styles.css",
                         noErrorOnMissing: false,
-                    }
+                    },
                 ],
             }),
         ],

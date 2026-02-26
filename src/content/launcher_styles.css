@@ -8,6 +8,8 @@
 #schoolbox-launcher-search {
     margin: 0;
     padding: 25px 5px;
+    height: 10px;
+    box-sizing: border-box;
 }
 
 #schoolbox-launcher-results-wrapper {
@@ -83,5 +85,28 @@
 }
 
 #schoolbox-date-time-display {
-    color: #f8f9ff !important;
+    color: #000000;
+}
+
+/* for ctrl k shortcut */
+#ultrabox-launcher-background-div {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 9999;
+
+    display: none;
+}
+
+#ultrabox-launcher-popup-content-div {
+    width: 800px;
+    max-width: calc(100vw - 2rem);
+    height: fit-content;
+    margin: auto;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, 0);
 }
