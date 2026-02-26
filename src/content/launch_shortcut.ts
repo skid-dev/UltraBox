@@ -60,8 +60,10 @@ function inject_launcher_shortcut() {
         { capture: true }
     )
 
+    // also listen for messages from chrome extension
+    // box of books webreader likes to use stopPropagation 
+    // for some events so this prioritises the content script
     chrome.runtime.onMessage.addListener((request) => {
-        console.log("Received message in content script:", request)
         if (request.action === "launcher-enable") {
             enable_launcher()
         }
