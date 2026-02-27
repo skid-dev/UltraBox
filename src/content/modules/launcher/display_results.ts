@@ -1,7 +1,13 @@
+import type Fuse from "fuse.js"
 import { IndexedItem } from "../../../types/indexed_item"
 import { lighten } from "../../functions/lighten"
 import { darken } from "../../functions/darken"
 import { Settings } from "../../../types/settings"
+
+export interface LauncherSearchResult {
+    item: IndexedItem
+    matches?: ReadonlyArray<Fuse.FuseResultMatch>
+}
 
 // Helper to promisify chrome.storage.sync.get for settings
 const get_stored_settings = (): Promise<Settings | undefined> =>
@@ -11,9 +17,47 @@ const get_stored_settings = (): Promise<Settings | undefined> =>
         })
     })
 
+function append_highlighted_text(
+    container: HTMLElement,
+    text: string,
+    indices: ReadonlyArray<readonly [number, number]>
+): void {
+    if (indices.length === 0) {
+        container.innerText = text
+        return
+    }
+
+    let current_index = 0
+
+    for (const [start, end] of indices) {
+        if (start > current_index) {
+            container.appendChild(document.createTextNode(text.slice(current_index, start)))
+        }
+
+        const highlight = document.createElement("mark")
+        highlight.classList.add("ultrabox-launcher-highlight")
+        highlight.innerText = text.slice(start, end + 1)
+        container.appendChild(highlight)
+
+        current_index = end + 1
+    }
+
+    if (current_index < text.length) {
+        container.appendChild(document.createTextNode(text.slice(current_index)))
+    }
+}
+
+function get_match_ranges(
+    result: LauncherSearchResult,
+    key_name: "item.title" | "item.content"
+): ReadonlyArray<readonly [number, number]> {
+    const match = result.matches?.find(entry => entry.key === key_name)
+    return match?.indices ?? []
+}
+
 export async function display_results(
     parent_div: HTMLElement,
-    results: IndexedItem[]
+    results: LauncherSearchResult[]
 ): Promise<void> {
     const stored_settings = await get_stored_settings()
     const is_dark_mode = stored_settings?.inject_css ?? false
@@ -24,26 +68,26 @@ export async function display_results(
         let item_parent = document.createElement("div")
         item_parent.classList.add("ultrabox-launcher-item-parent")
 
-        if (result.item.colour) {
+        if (result.item.item.colour) {
             if (is_dark_mode) {
-                item_parent.style.backgroundColor = darken(result.item.colour, 0.8)
+                item_parent.style.backgroundColor = darken(result.item.item.colour, 0.8)
             } else {
-                item_parent.style.backgroundColor = lighten(result.item.colour, 0.8)
+                item_parent.style.backgroundColor = lighten(result.item.item.colour, 0.8)
             }
         }
 
         // item image
-        if (result.parent_channel !== "news") {
+        if (result.item.parent_channel !== "news") {
             let item_image = document.createElement("div")
             item_image.classList.add("ultrabox-launcher-item-placeholder-image")
-            item_image.style.backgroundColor = result.item.colour || "#a8caff"
-            item_image.innerText = result.item.title[0].toUpperCase()
+            item_image.style.backgroundColor = result.item.item.colour || "#a8caff"
+            item_image.innerText = result.item.item.title[0].toUpperCase()
 
             item_parent.appendChild(item_image)
         } else {
             let item_image = document.createElement("img")
             item_image.classList.add("ultrabox-launcher-item-image")
-            item_image.src = result.item.image_uri || ""
+            item_image.src = result.item.item.image_uri || ""
             item_image.onerror = () => {
                 item_image.onerror = null
                 item_image.src = "/images/logo.php?logo=skin_logo_square&size=normal"
@@ -61,19 +105,24 @@ export async function display_results(
 
         let item_channel = document.createElement("div")
         item_channel.classList.add("ultrabox-launcher-item-channel")
-        item_channel.innerText = result.item.parent + " / "
+        item_channel.innerText = result.item.item.parent + " / "
         item_title.appendChild(item_channel)
 
         let item_title_link = document.createElement("a")
         let link = null
-        if (result.parent_channel !== "this_textbook") {
-            link = new URL(result.item.link)
+        if (result.item.parent_channel !== "this_textbook") {
+            link = new URL(result.item.item.link)
             link.searchParams.set("ub_ref", "launcher")
             item_title_link.href = link.toString()
         } else {
-            item_title_link.setAttribute("data-heading-name", result.item.title)
+            item_title_link.setAttribute("data-heading-name", result.item.item.title)
         }
-        item_title_link.innerText = result.item.title
+
+        append_highlighted_text(
+            item_title_link,
+            result.item.item.title,
+            get_match_ranges(result, "item.title")
+        )
         item_title.appendChild(item_title_link)
 
         item_details_container.appendChild(item_title)
@@ -81,7 +130,12 @@ export async function display_results(
         // content preview
         let item_content = document.createElement("div")
         item_content.classList.add("ultrabox-launcher-item-content")
-        item_content.innerText = result.item.content.slice(0, 200)
+        const content_preview = result.item.item.content.slice(0, 200)
+        const content_ranges = get_match_ranges(result, "item.content")
+            .map(([start, end]) => [start, Math.min(end, content_preview.length - 1)] as const)
+            .filter(([start, end]) => start <= end)
+
+        append_highlighted_text(item_content, content_preview, content_ranges)
         item_details_container.appendChild(item_content)
 
         // add to parent div
