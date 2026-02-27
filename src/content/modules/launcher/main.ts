@@ -41,6 +41,7 @@ export async function get_news_channels(): Promise<void> {
         ignoreDiacritics: true,
         useExtendedSearch: true,
         includeScore: true,
+        includeMatches: true,
     })
 }
 
@@ -200,10 +201,16 @@ export async function on_input(ev: Event): Promise<void> {
             return {
                 entry: result.item,
                 score: base_score - recency_boost - bounce_rate_boost,
+                matches: result.matches,
             }
         })
         .sort((a, b) => a.score - b.score)
-        .map(result => result.entry)
+        .map(result => {
+            return {
+                item: result.entry,
+                matches: result.matches,
+            }
+        })
 
     let filtered_results = weighted_results.slice(0, 8)
 

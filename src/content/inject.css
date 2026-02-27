@@ -243,6 +243,13 @@ table, th, td {
     color: #e6e9ef !important;
 }
 
+
+.ultrabox-launcher-highlight {
+    background-color: #ffeb3b !important;
+    color: #111 !important;
+    padding: 0 2px;
+    border-radius: 2px;
+}
 .ultrabox-launcher-item-content {
     color: rgba(230, 233, 239, 0.7) !important;
     font-size: 0.92em;
