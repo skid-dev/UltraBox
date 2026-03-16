@@ -3,7 +3,7 @@ import { extract_hostnames } from "../../functions/extract_hostname"
 
 export default <Module>{
     setting: async s => {
-        return !!s.launcher_module
+        return !!s.launcher_module && !!s.launcher_module_shortcut
     },
     condition: async (tab_id, tab, settings) => {
         const { current_domain, main_domain_hostname, is_homepage } = extract_hostnames(

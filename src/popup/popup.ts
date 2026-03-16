@@ -7,35 +7,27 @@ const themeToggle = document.getElementById("theme-toggle") as HTMLButtonElement
 const mainDomainInput = document.getElementById("mainDomain") as HTMLInputElement
 const newsRssFeedInput = document.getElementById("newsRssFeed") as HTMLInputElement
 
-const settingCheckboxes = Array.from(document.getElementsByClassName("toggle-setting")).map(elem => {
+interface SettingCheckbox {
+    container: HTMLElement
+    checkbox: HTMLInputElement
+    key: keyof Settings
+    dependant_ids: string[]
+}
+
+const settingCheckboxes: SettingCheckbox[] = Array.from(document.getElementsByClassName("toggle-setting")).map(elem => {
     const checkbox = elem.querySelector("input[type='checkbox']") as HTMLInputElement
-    console.log(checkbox)
+    const elem_name = elem.getAttribute("data-setting-var")
+
+    const dependants: string[] = Array.from(
+        document.querySelectorAll(`[data-dependent-setting="${elem_name}"]`)
+    ).map(dep => dep.getAttribute("data-setting-var") as string)
+
     return {
         container: elem as HTMLElement,
         checkbox: checkbox,
         key: elem.getAttribute("data-setting-var") as keyof Settings,
+        dependant_ids: dependants,
     }
-})
-
-// Load settings
-chrome.storage.sync.get(["settings", "theme"], result => {
-    const settings: Settings = result.settings
-    if (!settings) return
-
-    // load input settings
-    mainDomainInput.value = settings.main_domain
-    newsRssFeedInput.value = settings.news_rss_feed
-
-    // load checkbox settings
-    settingCheckboxes.forEach(({ checkbox, key }) => {
-        if (key in settings) {
-            checkbox.checked = settings[key] as boolean
-        }
-    })
-
-    // Load saved theme or default to light
-    const saved_theme = (result.theme as string) || "light"
-    applyTheme(saved_theme)
 })
 
 // Theme toggle functionality
@@ -58,6 +50,34 @@ function applyTheme(theme: string) {
     }
 }
 
+// Load settings
+chrome.storage.sync.get(["settings", "theme"], result => {
+    const settings: Settings = result.settings
+    if (!settings) return
+
+    // load input settings
+    mainDomainInput.value = settings.main_domain
+    newsRssFeedInput.value = settings.news_rss_feed
+
+    // load checkbox settings
+    settingCheckboxes.forEach(({ checkbox, key, dependant_ids }) => {
+        if (key in settings) {
+            checkbox.checked = settings[key] as boolean
+        }
+
+        dependant_ids.forEach(id => {
+            const setting_element = settingCheckboxes.find(s => s.key === id)
+            if (setting_element) {
+                setting_element.container.style.display = checkbox.checked ? "block" : "none"
+            }
+        })
+    })
+
+    // Load saved theme or default to light
+    const saved_theme = (result.theme as string) || "light"
+    applyTheme(saved_theme)
+})
+
 // Save settings function
 const saveSettings = () => {
     // save input settings
@@ -67,8 +87,16 @@ const saveSettings = () => {
     }
 
     // save checkbox settings
-    settingCheckboxes.forEach(({ checkbox, key }) => {
+    settingCheckboxes.forEach(({ checkbox, key, dependant_ids }) => {
         settings[key] = checkbox.checked
+
+        // Update dependant elements
+        dependant_ids.forEach(id => {
+            const setting_element = settingCheckboxes.find(s => s.key === id)
+            if (setting_element) {
+                setting_element.container.style.display = checkbox.checked ? "block" : "none"
+            }
+        })
     })
 
     chrome.storage.sync.set({ settings })

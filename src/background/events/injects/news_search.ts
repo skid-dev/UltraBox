@@ -1,7 +1,7 @@
 import { Module } from "../.../../../../types/module"
 import { extract_hostnames } from "../../functions/extract_hostname"
 
-export default {
+export default <Module> {
     setting: s => {
         return !!s.news_search_module
     },
