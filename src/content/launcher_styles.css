@@ -64,6 +64,11 @@
     gap: 4px;
 }
 
+.ultrabox-launcher-match {
+    font-weight: 700;
+    color: inherit;
+}
+
 #schoolbox-launcher-background-div {
     display: flex;
     justify-content: center;

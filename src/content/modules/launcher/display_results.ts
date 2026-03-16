@@ -17,27 +17,62 @@ const get_stored_settings = (): Promise<Settings | undefined> =>
         })
     })
 
-function append_highlighted_text(
+function normalize_match_ranges(
+    indices: ReadonlyArray<readonly [number, number]>,
+    text_length: number
+): ReadonlyArray<readonly [number, number]> {
+    if (text_length === 0 || indices.length === 0) {
+        return []
+    }
+
+    const sorted_ranges = indices
+        .map(([start, end]) => [Math.max(0, start), Math.min(end, text_length - 1)] as [number, number])
+        .filter(([start, end]) => start <= end)
+        .sort((a, b) => a[0] - b[0] || a[1] - b[1])
+
+    if (sorted_ranges.length === 0) {
+        return []
+    }
+
+    const merged_ranges: [number, number][] = [sorted_ranges[0]]
+
+    for (const [start, end] of sorted_ranges.slice(1)) {
+        const current_range = merged_ranges[merged_ranges.length - 1]
+
+        if (start <= current_range[1] + 1) {
+            current_range[1] = Math.max(current_range[1], end)
+            continue
+        }
+
+        merged_ranges.push([start, end])
+    }
+
+    return merged_ranges
+}
+
+function append_matched_text(
     container: HTMLElement,
     text: string,
     indices: ReadonlyArray<readonly [number, number]>
 ): void {
-    if (indices.length === 0) {
+    const normalized_ranges = normalize_match_ranges(indices, text.length)
+
+    if (normalized_ranges.length === 0) {
         container.innerText = text
         return
     }
 
     let current_index = 0
 
-    for (const [start, end] of indices) {
+    for (const [start, end] of normalized_ranges) {
         if (start > current_index) {
             container.appendChild(document.createTextNode(text.slice(current_index, start)))
         }
 
-        const highlight = document.createElement("mark")
-        highlight.classList.add("ultrabox-launcher-highlight")
-        highlight.innerText = text.slice(start, end + 1)
-        container.appendChild(highlight)
+        const matched_text = document.createElement("strong")
+        matched_text.classList.add("ultrabox-launcher-match")
+        matched_text.innerText = text.slice(start, end + 1)
+        container.appendChild(matched_text)
 
         current_index = end + 1
     }
@@ -118,7 +153,7 @@ export async function display_results(
             item_title_link.setAttribute("data-heading-name", result.item.item.title)
         }
 
-        append_highlighted_text(
+        append_matched_text(
             item_title_link,
             result.item.item.title,
             get_match_ranges(result, "item.title")
@@ -135,7 +170,7 @@ export async function display_results(
             .map(([start, end]) => [start, Math.min(end, content_preview.length - 1)] as const)
             .filter(([start, end]) => start <= end)
 
-        append_highlighted_text(item_content, content_preview, content_ranges)
+        append_matched_text(item_content, content_preview, content_ranges)
         item_details_container.appendChild(item_content)
 
         // add to parent div
