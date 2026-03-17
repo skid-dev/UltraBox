@@ -6,6 +6,11 @@ export interface RevisionHistoryEntry {
 
     // unique revision data for this specific revision
     update_timestamp: number
+
+    diff_new_size: number
+    diff_modified_size: number
+    diff_delete_size: number
+
     data: RevisionData
 }
 

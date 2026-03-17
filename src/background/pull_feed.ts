@@ -1,4 +1,3 @@
-// rss_poller.ts
 import { ItemRecord } from "../types/item_record"
 import { XMLParser } from "fast-xml-parser"
 import { RSSItem } from "../types/rss_item"
@@ -7,6 +6,9 @@ import * as get_storage from "../storage/get"
 import { convert_to_plaintext } from "./functions/convert_to_plaintext"
 import { find_first_storage_image_link } from "./functions/get_image_uri"
 import { Settings } from "../types/settings"
+import { add_revision_to_history } from "../storage/revisions/revision_set"
+import { RevisionData } from "../types/rev_history"
+import { calculate_new_metrics } from "./functions/calculate_rev_metrics"
 
 const STORAGE_KEY = "news"
 
@@ -40,8 +42,43 @@ function item_to_record(item_json: RSSItem): ItemRecord {
         updated_at: get_updated_timestamp(item_json),
         view_count: 0,
         last_viewed: 0,
-        bounce_count: 0
+        bounce_count: 0,
     }
+}
+
+async function append_revision(
+    guid: string,
+    prev_data: Partial<ItemRecord>,
+    revision: Partial<ItemRecord>
+): Promise<string> {
+    // generate old revision data
+    const prev_data_obj: RevisionData = {
+        title: prev_data.title ?? "",
+        content: prev_data.content ?? "",
+    }
+
+    // create the revision data
+    const rev_object: RevisionData = {
+        title: revision.title ?? "",
+        content: revision.content ?? "",
+    }
+
+    const now = Date.now()
+    const { new_lines, modified_lines, deleted_lines } = await calculate_new_metrics(
+        prev_data_obj,
+        rev_object
+    )
+
+    const data = await add_revision_to_history(
+        guid,
+        rev_object,
+        now,
+        new_lines,
+        modified_lines,
+        deleted_lines
+    )
+
+    return data.rev_id
 }
 
 export const poll_feed = async (): Promise<void> => {
@@ -82,12 +119,24 @@ export const poll_feed = async (): Promise<void> => {
                 }
 
                 const existing_updated_at = existing_item.updated_at ?? 0
-                if (!existing_item.updated_at || existing_updated_at < (item_record.updated_at ?? 0)) {
+                if (
+                    !existing_item.updated_at ||
+                    existing_updated_at < (item_record.updated_at ?? 0)
+                ) {
                     updates.updated_at = item_record.updated_at
                 }
 
                 if (Object.keys(updates).length > 0) {
+                    const revision_id = await append_revision(item_record.guid, existing_item, {
+                        ...existing_item,
+                        ...updates,
+                    })
                     await set_storage.update_item_properties(STORAGE_KEY, item_record.guid, updates)
+                    await set_storage.add_revision_history_entry(
+                        STORAGE_KEY,
+                        item_record.guid,
+                        revision_id
+                    )
                 }
 
                 continue
