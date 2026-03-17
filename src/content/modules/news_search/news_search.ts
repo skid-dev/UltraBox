@@ -19,7 +19,7 @@ function collect_news_items(): void {
     ).map(elem => {
         return {
             elem: elem as HTMLLIElement,
-            category_string: elem.querySelector(`a[href^="/news?topic"]`)?.textContent.trim(),
+            category_string: elem.querySelector(`a[href^="/news?topic"]`)?.textContent?.trim() ?? null,
         }
     })
 }
@@ -171,3 +171,5 @@ let run_interval = setInterval(() => {
         clearInterval(run_interval)
     }
 }, 500)
+
+export {}

@@ -4,6 +4,7 @@
   "description": "A Chrome extension for SchoolBox built with TypeScript, React, and Bun.",
   "main": "src/background/background.ts",
   "scripts": {
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
     "build": "webpack --config webpack.config.cjs",
     "dev": "webpack --config webpack.config.cjs --watch",
     "serve-dist": "bun serve dist",

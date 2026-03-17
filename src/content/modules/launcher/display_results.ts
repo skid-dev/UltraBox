@@ -1,4 +1,4 @@
-import type Fuse from "fuse.js"
+import type { FuseResultMatch } from "fuse.js"
 import { IndexedItem } from "../../../types/indexed_item"
 import { lighten } from "../../functions/lighten"
 import { darken } from "../../functions/darken"
@@ -6,7 +6,7 @@ import { Settings } from "../../../types/settings"
 
 export interface LauncherSearchResult {
     item: IndexedItem
-    matches?: ReadonlyArray<Fuse.FuseResultMatch>
+    matches?: ReadonlyArray<FuseResultMatch>
 }
 
 // Helper to promisify chrome.storage.sync.get for settings
