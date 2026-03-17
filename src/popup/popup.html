@@ -81,7 +81,10 @@
             <div id="modules" class="tab-content">
                 <h2>Modules</h2>
                 <div class="module">
-                    <div class="setting-container toggle-setting" data-setting-var="launcher_module">
+                    <div
+                        class="setting-container toggle-setting"
+                        data-setting-var="launcher_module"
+                    >
                         <label for="launcherModule">UltraBox Launcher</label>
                         <label class="toggle-switch">
                             <input type="checkbox" id="launcherModule" name="launcherModule" />
@@ -91,9 +94,28 @@
                     <div class="module-description">
                         Enable quick access launcher for faster navigation.
                     </div>
+
+                    <div
+                        class="setting-container toggle-setting"
+                        data-setting-var="launcher_module_shortcut"
+                        data-dependent-setting="launcher_module"
+                    >
+                        <label for="launcherModule">Launcher Shortcut</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="launcherModule" name="launcherModule" />
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div class="module-description">
+                            Enable the Ctrl + K shortcut to open the launcher from any Schoolbox /
+                            Box of Books page
+                        </div>
+                    </div>
                 </div>
                 <div class="module">
-                    <div class="setting-container toggle-setting" data-setting-var="news_search_module">
+                    <div
+                        class="setting-container toggle-setting"
+                        data-setting-var="news_search_module"
+                    >
                         <label for="newsSearchModule">News search</label>
                         <label class="toggle-switch">
                             <input type="checkbox" id="newsSearchModule" name="newsSearchModule" />
@@ -105,15 +127,66 @@
                     </div>
                 </div>
                 <div class="module">
-                    <div class="setting-container toggle-setting" data-setting-var="recents_list_module">
+                    <div
+                        class="setting-container toggle-setting"
+                        data-setting-var="recents_list_module"
+                    >
                         <label for="recentsListModule">Recents list</label>
                         <label class="toggle-switch">
-                            <input type="checkbox" id="recentsListModule" name="recentsListModule" />
+                            <input
+                                type="checkbox"
+                                id="recentsListModule"
+                                name="recentsListModule"
+                            />
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
                     <div class="module-description">
                         Displays a list of recently viewed pages for quick access.
+                    </div>
+                </div>
+                <div class="module">
+                    <div
+                        class="setting-container toggle-setting"
+                        data-setting-var="record_post_history"
+                    >
+                        <label for="RecordPostHistoryModule">Record post history</label>
+                        <label class="toggle-switch">
+                            <input
+                                type="checkbox"
+                                id="RecordPostHistoryModule"
+                                name="RecordPostHistoryModule"
+                            />
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="module-description">
+                        Records edit history for posts on the site, allowing you to view previous
+                        versions and change diffs.
+                    </div>
+                    <div
+                        class="setting-container toggle-setting"
+                        data-setting-var="record_setting_active"
+                        data-dependent-setting="record_post_history"
+                    >
+                        <label for="ActiveRecordModule">Actively listen for changes</label>
+
+                        <label class="toggle-switch">
+                            <input
+                                type="checkbox"
+                                id="ActiveRecordModule"
+                                name="ActiveRecordModule"
+                            />
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div class="module-description">
+                            Actively listens for changes and updates to posts by connecting to your
+                            LMS socket and receiving changes in real time. This setting may impact
+                            battery life as it maintains a websocket connection in the background.
+                            If this setting is disabled, the extension periodically pulls for
+                            changes in the background and checks for changes as you visit your LMS
+                            homepage.
+                        </div>
                     </div>
                 </div>
             </div>

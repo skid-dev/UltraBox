@@ -76,8 +76,10 @@ export default async function on_update(tab_id: number, _: any, tab: chrome.tabs
         }
 
         // condition check (supports sync or async)
-        const condition_valid = await Promise.resolve(inject.condition(tab_id, tab, settings))
-        if (!condition_valid) continue
+        if (inject.condition) {
+            const condition_valid = await Promise.resolve(inject.condition(tab_id, tab, settings))
+            if (!condition_valid) continue
+        }
 
         // action (supports sync or async)
         try {

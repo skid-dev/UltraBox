@@ -72,6 +72,7 @@ export async function update_item_properties(
     await chrome.storage.local.set({ [channel_key]: channel_items })
 }
 
+// update item view count and last viewed time
 export async function update_item_vc_and_lvt(channel_name: string, item_guid: string): Promise<number | null> {
     const channel_key = `news_channel_${channel_name}`
     const channel_data = await chrome.storage.local.get(channel_key)
