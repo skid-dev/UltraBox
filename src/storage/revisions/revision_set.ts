@@ -3,7 +3,7 @@ import { get_storage_key } from "./common"
 
 export async function add_revision_to_history(
     parent_guid: string,
-    revision: RevisionData,
+    prev_revision: RevisionData,
     timestamp: number,
     diff_add: number,
     diff_modify: number,
@@ -16,7 +16,7 @@ export async function add_revision_to_history(
         rev_id: uuid,
         parent_guid,
         update_timestamp: timestamp,
-        data: revision,
+        data: prev_revision,
 
         diff_new_size: diff_add,
         diff_modified_size: diff_modify,

@@ -71,7 +71,7 @@ async function append_revision(
 
     const data = await add_revision_to_history(
         guid,
-        rev_object,
+        prev_data_obj,
         now,
         new_lines,
         modified_lines,
