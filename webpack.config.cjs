@@ -17,6 +17,7 @@ module.exports = (env, argv) => {
             get_textbooks: "./src/content/modules/launcher/getters/get_textbooks.ts",
             inject_css_tools: "./src/content/inject_css_tools.ts",
             news_search_main: "./src/content/modules/news_search/news_search.ts",
+            display_history: "./src/content/modules/post_history_tracking/content.ts"
         },
 
         output: {
@@ -95,6 +96,11 @@ module.exports = (env, argv) => {
                         to: "news_search_styles.css",
                         noErrorOnMissing: false,
                     },
+                    {
+                        from: "src/content/modules/post_history_tracking/news_history.css",
+                        to: "news_history.css",
+                        noErrorOnMissing: false,
+                    }
                 ],
             }),
         ],

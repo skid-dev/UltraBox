@@ -1,6 +1,7 @@
 export interface ItemRecord {
     title: string
     content: string
+    raw: string
     parent: string
     link: string
     guid: string

@@ -1,0 +1,38 @@
+/* Modified old styles for the previous elements */
+.news-post {
+    display: flex !important;
+}
+
+/* New styles for displaying the history */
+#ultrabox-history-container {
+    background-color: white;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    width: 400px;
+
+    height: fit-content;
+}
+
+#ub-history-title {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.ub-rev-title {
+    font-weight: bold;
+}
+
+.ub-diff-container {
+    display: flex;
+    gap: 5px;
+}
+
+.ub-diff-add {
+    color: #32a852;
+}
+
+.ub-diff-delete {
+    color: #eb4034;
+}
+

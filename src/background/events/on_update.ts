@@ -7,8 +7,18 @@ import launcher from "./injects/launcher"
 import news_search from "./injects/news_search"
 import box_of_books from "./injects/box_of_books"
 import launcher_shortcut from "./injects/launcher_shortcut"
+import news_tracker_fetch from "./injects/news_tracker"
+import news_tracker_display from "./injects/display_history"
 
-const INJECTS = [dark_theme_css, launcher, news_search, box_of_books, launcher_shortcut]
+const INJECTS = [
+    dark_theme_css,
+    launcher,
+    news_search,
+    box_of_books,
+    launcher_shortcut,
+    news_tracker_fetch,
+    news_tracker_display,
+]
 
 // additional domains to track, by default, all pages in schoolbox and box of books are tracked.
 const RECENTS_TRACK_DOMAINS = [
@@ -23,6 +33,7 @@ const RECENTS_TRACK_DOMAINS = [
     "onedrive.live.com",
 ]
 
+// promisify getting settings from storagesync
 const get_stored_settings = (): Promise<Settings | undefined> =>
     new Promise(resolve => {
         chrome.storage.sync.get("settings", result => {
@@ -62,6 +73,24 @@ async function track_page_if_in_domain(tab_id: number, tab: chrome.tabs.Tab) {
     add_url_to_recents(current_tab_url, tab.title)
 }
 
+async function is_page(current_url: string, target_url_path: string): Promise<boolean> {
+    const user_settings = await get_stored_settings()
+    if (!user_settings?.main_domain) return false
+
+    // check if the current url is the users schoolbox domain
+    const { current_domain, main_domain_hostname } = extract_hostnames(
+        current_url,
+        user_settings.main_domain
+    )
+    if (!main_domain_hostname || !current_domain?.includes(main_domain_hostname)) {
+        return false
+    }
+
+    // if the current url path includes the target url path, return true
+    const current_url_path = new URL(current_url).pathname
+    return current_url_path.includes(target_url_path)
+}
+
 export default async function on_update(tab_id: number, _: any, tab: chrome.tabs.Tab) {
     // if (change_info.status !== "complete" || !tab.url) return
     if (!tab.url) return
@@ -77,7 +106,9 @@ export default async function on_update(tab_id: number, _: any, tab: chrome.tabs
 
         // condition check (supports sync or async)
         if (inject.condition) {
-            const condition_valid = await Promise.resolve(inject.condition(tab_id, tab, settings))
+            const condition_valid = await Promise.resolve(
+                inject.condition(tab_id, tab, settings, (url: string) => is_page(tab.url!, url))
+            )
             if (!condition_valid) continue
         }
 

@@ -35,6 +35,7 @@ function item_to_record(item_json: RSSItem): ItemRecord {
     return {
         title: item_json.title ?? "",
         content: convert_to_plaintext(item_json.description ?? ""),
+        raw: item_json.description ?? "",
         parent: "News",
         link: item_json.link ?? "",
         guid: item_json.guid ?? "",
@@ -54,13 +55,13 @@ async function append_revision(
     // generate old revision data
     const prev_data_obj: RevisionData = {
         title: prev_data.title ?? "",
-        content: prev_data.content ?? "",
+        content: prev_data.raw ?? "",
     }
 
     // create the revision data
     const rev_object: RevisionData = {
         title: revision.title ?? "",
-        content: revision.content ?? "",
+        content: revision.raw ?? "",
     }
 
     const now = Date.now()
@@ -116,6 +117,14 @@ export const poll_feed = async (): Promise<void> => {
 
                 if (existing_item.content !== item_record.content) {
                     updates.content = item_record.content
+                }
+
+                if (existing_item.raw !== item_record.raw) {
+                    updates.raw = item_record.raw
+                }
+
+                if (existing_item.title !== item_record.title) {
+                    updates.title = item_record.title
                 }
 
                 const existing_updated_at = existing_item.updated_at ?? 0
