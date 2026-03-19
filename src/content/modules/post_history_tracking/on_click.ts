@@ -56,6 +56,18 @@ function create_diff_elements(rev: RevisionHistoryEntry): HTMLDivElement {
     return parent_div
 }
 
+function format_timestamp(timestamp: number): string {
+    const time = new Intl.DateTimeFormat("en-GB", {
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+    }).format(new Date(timestamp))
+    return time.toString()
+}
+
 export async function setup(): Promise<void> {
     const news_row_elem = document.querySelector(".news-post")
 
@@ -73,30 +85,25 @@ export async function setup(): Promise<void> {
 
     if (revisions.length === 0) {
         history_div.innerHTML += "<i>No edit history found for this post.</i>"
+        return
     }
 
     // sort revisions to most recent first
     revisions.sort((a, b) => b.update_timestamp - a.update_timestamp)
 
-    for (let i = revisions.length - 1; i >= 0; i--) {
+    // most recent version first (top)
+    for (let i = 0; i < revisions.length; i++) {
         const rev = revisions[i]
         const rev_wrapper = document.createElement("div")
         rev_wrapper.classList.add("ultrabox-revision-wrapper")
 
-        const timestamp = new Intl.DateTimeFormat("en-GB", {
-            weekday: "short",
-            day: "2-digit",
-            month: "short",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-        }).format(new Date(rev.update_timestamp))
-
+        const timestamp = format_timestamp(rev.update_timestamp)
         const title_elem = document.createElement("div")
         title_elem.classList.add("ub-rev-title")
         title_elem.textContent = timestamp.toString()
         rev_wrapper.appendChild(title_elem)
 
+        // show current version text for the most recent revision
         if (i === 0) {
             rev_wrapper.classList.add("ub-revision-current")
 
@@ -110,15 +117,34 @@ export async function setup(): Promise<void> {
 
         const view_text_button = document.createElement("button")
         view_text_button.classList.add("ub-view-text-button")
-        view_text_button.textContent = "[View previous]"
-        view_text_button.setAttribute("data-rev-id", rev.rev_id)
-        view_text_button.addEventListener("click", on_click)
-        diff_elem.appendChild(view_text_button)
+        if (i !== 0) {
+            view_text_button.textContent = "[View this version]"
+            view_text_button.setAttribute("data-rev-id", revisions[i - 1].rev_id)
+            view_text_button.addEventListener("click", on_click)
+            diff_elem.appendChild(view_text_button)
+        }
 
         rev_wrapper.appendChild(diff_elem)
-
         history_div.appendChild(rev_wrapper)
     }
+
+    // create the element for the "initial version"
+    const initial_wrapper = document.createElement("div")
+    initial_wrapper.classList.add("ultrabox-revision-wrapper")
+
+    const title_elem = document.createElement("div")
+    title_elem.classList.add("ub-rev-title")
+    title_elem.textContent = "Initial creation"
+    initial_wrapper.appendChild(title_elem)
+
+    const view_text_button = document.createElement("button")
+    view_text_button.classList.add("ub-view-text-button")
+    view_text_button.textContent = "[View initial]"
+    view_text_button.setAttribute("data-rev-id", revisions[revisions.length - 1].rev_id)
+    view_text_button.addEventListener("click", on_click)
+    initial_wrapper.appendChild(view_text_button)
+
+    history_div.appendChild(initial_wrapper)
 
     news_row_elem?.appendChild(history_div)
 }
