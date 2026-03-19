@@ -108,6 +108,7 @@ export const poll_feed = async (): Promise<void> => {
             if (!existing_item) {
                 // if the item does not exist, add it to the storage
                 let success = await set_storage.add_item_to_channel(STORAGE_KEY, item_record)
+                console.log("Adding new item to channel:", item_record)
                 if (!success) {
                     console.error("Failed to add item to channel", item_record)
                     continue

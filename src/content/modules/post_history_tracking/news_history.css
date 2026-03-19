@@ -6,9 +6,9 @@
 /* New styles for displaying the history */
 #ultrabox-history-container {
     background-color: white;
+    display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 12px;
+    padding: 16px;
     width: 400px;
 
     height: fit-content;
@@ -17,6 +17,52 @@
 #ub-history-title {
     text-transform: uppercase;
     font-weight: bold;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+}
+
+.ultrabox-revision-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 0 0 8px 30px;
+}
+
+.ultrabox-revision-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 14px;
+    height: 14px;
+    border: 3px solid #dbe8ff;
+    border-radius: 999px;
+    background: #4287f5;
+    box-shadow: 0 0 0 2px white;
+    box-sizing: border-box;
+}
+
+.ultrabox-revision-wrapper::after {
+    content: "";
+    position: absolute;
+    top: 20px;
+    bottom: -4px;
+    left: 10px;
+    width: 2px;
+    background: #7da8f8;
+}
+
+.ultrabox-revision-wrapper:last-child {
+    padding-bottom: 0;
+}
+
+.ultrabox-revision-wrapper:last-child::after {
+    display: none;
+}
+
+.ub-revision-current::before {
+    border-color: #d8f1de;
+    background: #32a852;
 }
 
 .ub-rev-title {
@@ -25,7 +71,31 @@
 
 .ub-diff-container {
     display: flex;
-    gap: 5px;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px 8px;
+}
+
+.ub-latest-span {
+    font-style: italic;
+    color: #2a7a3f;
+}
+
+.ub-view-text-button {
+    all: unset;
+    color: #4287f5;
+}
+
+.ub-view-text-button:hover {
+    all: unset;
+    cursor: pointer;
+    color: #1a5edb;
+}
+
+.ub-view-text-button:focus {
+    all: unset;
+    cursor: pointer;
+    color: #1a5edb;
 }
 
 .ub-diff-add {
@@ -35,4 +105,3 @@
 .ub-diff-delete {
     color: #eb4034;
 }
-

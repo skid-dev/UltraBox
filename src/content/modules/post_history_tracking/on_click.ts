@@ -75,22 +75,77 @@ export async function setup(): Promise<void> {
         history_div.innerHTML += "<i>No edit history found for this post.</i>"
     }
 
-    for (let rev of revisions) {
+    // sort revisions to most recent first
+    revisions.sort((a, b) => b.update_timestamp - a.update_timestamp)
+
+    for (let i = revisions.length - 1; i >= 0; i--) {
+        const rev = revisions[i]
         const rev_wrapper = document.createElement("div")
         rev_wrapper.classList.add("ultrabox-revision-wrapper")
 
-        const timestamp = new Date(rev.update_timestamp).toLocaleString()
+        const timestamp = new Intl.DateTimeFormat("en-GB", {
+            weekday: "short",
+            day: "2-digit",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+        }).format(new Date(rev.update_timestamp))
 
         const title_elem = document.createElement("div")
         title_elem.classList.add("ub-rev-title")
         title_elem.textContent = timestamp.toString()
+        rev_wrapper.appendChild(title_elem)
+
+        if (i === 0) {
+            rev_wrapper.classList.add("ub-revision-current")
+
+            const latest_span = document.createElement("div")
+            latest_span.classList.add("ub-latest-span")
+            latest_span.textContent = "Current version"
+            rev_wrapper.appendChild(latest_span)
+        }
 
         const diff_elem = create_diff_elements(rev)
 
-        rev_wrapper.appendChild(title_elem)
+        const view_text_button = document.createElement("button")
+        view_text_button.classList.add("ub-view-text-button")
+        view_text_button.textContent = "[View previous]"
+        view_text_button.setAttribute("data-rev-id", rev.rev_id)
+        view_text_button.addEventListener("click", on_click)
+        diff_elem.appendChild(view_text_button)
+
         rev_wrapper.appendChild(diff_elem)
+
         history_div.appendChild(rev_wrapper)
     }
 
     news_row_elem?.appendChild(history_div)
+}
+
+async function on_click(ev: MouseEvent): Promise<void> {
+    let target = ev.target as HTMLElement
+    const rev_id = target.getAttribute("data-rev-id")
+
+    if (!rev_id) {
+        console.error("Revision ID not found on button")
+        return
+    }
+
+    const revision = await get_revision(rev_id)
+
+    const news_elem = document.querySelector(".content article")
+    if (!news_elem) {
+        console.error("News article element not found")
+        return
+    }
+
+    // TODO: Fix xss vulnerability here by sanitizing the content before inserting into the page
+    const content = (revision?.data.content ?? "").replace(/^\s*<img[^>]*>/i, "")
+    news_elem.innerHTML = content
+
+    if (!revision) {
+        console.error("Revision data not found for rev ID:", rev_id)
+        return
+    }
 }
