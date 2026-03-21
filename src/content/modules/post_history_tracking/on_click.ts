@@ -68,13 +68,65 @@ function format_timestamp(timestamp: number): string {
     return time.toString()
 }
 
+function setup_history_sticky(history_div: HTMLDivElement, history_anchor: HTMLDivElement): void {
+    if (history_div.dataset.stickyInitialized === "true") {
+        return
+    }
+
+    history_div.dataset.stickyInitialized = "true"
+    const sticky_top_offset = 28
+
+    let frame_pending = false
+
+    const update_position = () => {
+        frame_pending = false
+
+        const anchor_rect = history_anchor.getBoundingClientRect()
+
+        if (anchor_rect.top <= sticky_top_offset) {
+            history_anchor.style.height = `${history_div.offsetHeight}px`
+            history_div.classList.add("ub-history-fixed")
+            history_div.style.left = `${anchor_rect.left}px`
+            history_div.style.width = `${anchor_rect.width}px`
+            history_div.style.top = `${sticky_top_offset}px`
+            return
+        }
+
+        history_anchor.style.height = ""
+        history_div.classList.remove("ub-history-fixed")
+        history_div.style.left = ""
+        history_div.style.top = ""
+        history_div.style.width = ""
+    }
+
+    const request_update = () => {
+        if (frame_pending) {
+            return
+        }
+
+        frame_pending = true
+        window.requestAnimationFrame(update_position)
+    }
+
+    document.addEventListener("scroll", request_update, true)
+    window.addEventListener("resize", request_update)
+    window.addEventListener("load", request_update)
+    request_update()
+}
+
 export async function setup(): Promise<void> {
     const news_row_elem = document.querySelector(".news-post")
+    if (!(news_row_elem instanceof HTMLElement)) {
+        return
+    }
 
+    const history_anchor = document.createElement("div")
+    history_anchor.id = "ultrabox-history-anchor"
     const history_div = document.createElement("div")
     history_div.id = "ultrabox-history-container"
+    history_anchor.appendChild(history_div)
 
-    news_row_elem?.appendChild(history_div)
+    news_row_elem.appendChild(history_anchor)
 
     const revisions = await fetch_versions(window.location.href)
 
@@ -85,6 +137,7 @@ export async function setup(): Promise<void> {
 
     if (revisions.length === 0) {
         history_div.innerHTML += "<i>No edit history found for this post.</i>"
+        setup_history_sticky(history_div, history_anchor)
         return
     }
 
@@ -117,12 +170,18 @@ export async function setup(): Promise<void> {
 
         const view_text_button = document.createElement("button")
         view_text_button.classList.add("ub-view-text-button")
+
         if (i !== 0) {
-            view_text_button.textContent = "[View this version]"
             view_text_button.setAttribute("data-rev-id", revisions[i - 1].rev_id)
             view_text_button.addEventListener("click", on_click)
-            diff_elem.appendChild(view_text_button)
+            view_text_button.textContent = "View"
+        } else {
+            // reloading the page to show the current version
+            // lazy shortcut to avoid having to implement a separate function to fetch the current version's content
+            view_text_button.addEventListener("click", () => window.location.reload())
+            view_text_button.textContent = "View latest"
         }
+        diff_elem.appendChild(view_text_button)
 
         rev_wrapper.appendChild(diff_elem)
         history_div.appendChild(rev_wrapper)
@@ -139,14 +198,14 @@ export async function setup(): Promise<void> {
 
     const view_text_button = document.createElement("button")
     view_text_button.classList.add("ub-view-text-button")
-    view_text_button.textContent = "[View initial]"
+    view_text_button.type = "button"
+    view_text_button.textContent = "View initial"
     view_text_button.setAttribute("data-rev-id", revisions[revisions.length - 1].rev_id)
     view_text_button.addEventListener("click", on_click)
     initial_wrapper.appendChild(view_text_button)
 
     history_div.appendChild(initial_wrapper)
-
-    news_row_elem?.appendChild(history_div)
+    setup_history_sticky(history_div, history_anchor)
 }
 
 async function on_click(ev: MouseEvent): Promise<void> {
@@ -174,4 +233,21 @@ async function on_click(ev: MouseEvent): Promise<void> {
         console.error("Revision data not found for rev ID:", rev_id)
         return
     }
+
+    // add some text that tells the user they're viewing an old version
+    const insert_before = document.querySelector(".banner.content")
+    if (!insert_before) {
+        console.error("Insert before element not found")
+        return
+    }
+
+    const warning_div =
+        document.querySelector("#ub-old-version-warning") ?? document.createElement("div")
+    warning_div.id = "ub-old-version-warning"
+
+    const version_time = format_timestamp(revision.update_timestamp)
+
+    warning_div.textContent = `You are viewing a previous version of this post captured on ${version_time}.`
+
+    insert_before.parentNode?.insertBefore(warning_div, insert_before)
 }
