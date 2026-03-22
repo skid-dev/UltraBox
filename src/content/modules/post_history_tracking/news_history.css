@@ -1,0 +1,158 @@
+/* Modified old styles for the previous elements */
+.news-post {
+    display: flex !important;
+    align-items: flex-start;
+}
+
+#ultrabox-history-anchor {
+    width: 400px;
+    flex: 0 0 400px;
+    align-self: flex-start;
+}
+
+/* New styles for displaying the history */
+#ultrabox-history-container {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    width: 100%;
+    height: fit-content;
+    box-sizing: border-box;
+    align-self: flex-start;
+}
+
+#ultrabox-history-container.ub-history-fixed {
+    position: fixed;
+    z-index: 1000;
+    max-height: calc(100vh - 28px);
+    overflow-y: auto;
+}
+
+#ub-history-title {
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+}
+
+.ultrabox-revision-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 0 0 8px 30px;
+}
+
+.ultrabox-revision-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 14px;
+    height: 14px;
+    border: 3px solid #dbe8ff;
+    border-radius: 999px;
+    background: #4287f5;
+    box-shadow: 0 0 0 2px white;
+    box-sizing: border-box;
+}
+
+.ultrabox-revision-wrapper::after {
+    content: "";
+    position: absolute;
+    top: 20px;
+    bottom: -4px;
+    left: 10px;
+    width: 2px;
+    background: #7da8f8;
+}
+
+.ultrabox-revision-wrapper:last-child {
+    padding-bottom: 0;
+}
+
+.ultrabox-revision-wrapper:last-child::after {
+    display: none;
+}
+
+.ub-revision-current::before {
+    border-color: #d8f1de;
+    background: #32a852;
+}
+
+.ub-rev-title {
+    font-weight: bold;
+}
+
+.ub-diff-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px 8px;
+}
+
+.ub-latest-span {
+    font-style: italic;
+    color: #2a7a3f;
+}
+
+.ub-view-text-button {
+    appearance: none;
+    all: unset;
+    border: 1px solid #8ca6d8;
+    border-radius: 0;
+    background: #f5f8ff;
+    color: #2859ad;
+    padding: 1px 7px;
+    font: inherit;
+    font-size: 12px;
+    line-height: 1.4;
+    cursor: pointer;
+    box-sizing: border-box;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.ub-view-text-button:hover {
+    background: #e9f0ff;
+    border-color: #6e8fcd;
+    color: #1f4d9b;
+}
+
+.ub-view-text-button:focus-visible {
+    background: #e9f0ff;
+    border-color: #6e8fcd;
+    color: #1f4d9b;
+}
+
+.ub-diff-add {
+    color: #32a852;
+}
+
+.ub-diff-delete {
+    color: #eb4034;
+}
+
+#ub-old-version-warning {
+    margin: 0 0 18px;
+    padding: 16px 18px 16px 22px;
+    border: 2px solid #9f3300;
+    border-left-width: 8px;
+    border-radius: 0;
+    background: #fff1dc;
+    color: #5a2200;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+}
+
+#ub-old-version-warning::before {
+    content: "Archived version";
+    display: block;
+    margin-bottom: 6px;
+    color: #8a2b00;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}

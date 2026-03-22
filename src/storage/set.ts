@@ -122,6 +122,33 @@ export async function increment_item_bounce_count(channel_name: string, item_gui
     await chrome.storage.local.set({ [channel_key]: channel_items })
 }
 
+export async function add_revision_history_entry(channel_name: string, item_guid: string, rev_id: string): Promise<string[]> {
+    const channel_key = `news_channel_${channel_name}`
+    const channel_data = await chrome.storage.local.get(channel_key)
+
+    // Check if the channel exists
+    if (!channel_data[channel_key]) {
+        console.error(`Channel ${channel_name} does not exist.`)
+        return []
+    }
+
+    let channel_items: ItemRecord[] = channel_data[channel_key] || []
+    
+    // Add the revision ID to the item's revision history
+    let updated_rev_history: string[] = []
+    channel_items = channel_items.map(item => {
+        if (item.guid === item_guid) {
+            const existing_history = item.rev_history_uuids || []
+            const new_history = [...existing_history, rev_id]
+            updated_rev_history = new_history
+            return { ...item, rev_history_uuids: new_history }
+        }
+        return item
+    })
+    await chrome.storage.local.set({ [channel_key]: channel_items })
+    return updated_rev_history
+}
+
 export async function remove_item_from_channel(channel_name: string, item_guid: string): Promise<void> {
     const channel_key = `news_channel_${channel_name}`
     const channel_data = await chrome.storage.local.get(channel_key)
