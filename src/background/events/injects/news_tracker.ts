@@ -6,6 +6,7 @@ export default <Module>{
         return !!s.record_post_history
     },
     action: async (tab_id, tab, settings) => {
+        console.log("[News history] Fetching for changes to news posts...")
         await poll_feed()
     },
 }
