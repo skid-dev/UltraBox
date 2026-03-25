@@ -17,7 +17,8 @@ module.exports = (env, argv) => {
             get_textbooks: "./src/content/modules/launcher/getters/get_textbooks.ts",
             inject_css_tools: "./src/content/inject_css_tools.ts",
             news_search_main: "./src/content/modules/news_search/news_search.ts",
-            display_history: "./src/content/modules/post_history_tracking/content.ts"
+            display_history: "./src/content/modules/post_history_tracking/content.ts",
+            history_puller: "./src/content/modules/post_history_tracking/puller.ts"
         },
 
         output: {

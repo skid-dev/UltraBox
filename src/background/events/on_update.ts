@@ -107,7 +107,13 @@ export default async function on_update(tab_id: number, _: any, tab: chrome.tabs
         // condition check (supports sync or async)
         if (inject.condition) {
             const condition_valid = await Promise.resolve(
-                inject.condition(tab_id, tab, settings, (url: string) => is_page(tab.url!, url))
+                inject.condition(
+                    tab_id,
+                    tab,
+                    settings,
+                    // wrapper function for matching the current page's URL against the specified target URL
+                    (url: string) => is_page(tab.url!, url)
+                )
             )
             if (!condition_valid) continue
         }
