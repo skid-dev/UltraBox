@@ -1,9 +1,7 @@
-import {setup} from "./on_click"
+import {setup} from "./setup"
 
 async function main() {
-    console.log("Running display history module")
-    const meta_elem = document.querySelector(".meta") as HTMLDivElement
-
+    console.log("[News history] Running display history module")
     await setup()
 }
 

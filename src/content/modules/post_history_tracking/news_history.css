@@ -15,11 +15,14 @@
     background-color: white;
     display: flex;
     flex-direction: column;
-    padding: 16px;
     width: 100%;
     height: fit-content;
     box-sizing: border-box;
     align-self: flex-start;
+}
+
+#ub-edit-history-list-container {
+    margin: 16px;
 }
 
 #ultrabox-history-container.ub-history-fixed {
@@ -30,7 +33,6 @@
 }
 
 #ub-history-title {
-    text-transform: uppercase;
     font-weight: bold;
     letter-spacing: 0.08em;
     margin-bottom: 8px;
@@ -144,6 +146,7 @@
     font-weight: 700;
     line-height: 1.5;
     letter-spacing: 0.01em;
+    min-height: 84px; /* to match minimum height of diff container */
 }
 
 #ub-old-version-warning::before {
@@ -155,4 +158,29 @@
     font-weight: 800;
     letter-spacing: 0.14em;
     text-transform: uppercase;
+}
+
+.ub-initial-buttons {
+    display: flex;
+    gap: 0 8px;
+}
+
+#ub-diff-status-display {
+    margin-bottom: 12px;
+    background-color: #fff1dc;
+    padding: 16px;
+    border: 2px solid #9f3300;
+    border-left-width: 8px;
+}
+
+#ub-diff-title {
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+}
+
+#ub-diff-versions-display {
+    display: flex;
+    gap: 0 8px;
+    justify-content: space-around;
 }
