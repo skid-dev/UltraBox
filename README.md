@@ -5,7 +5,6 @@ A Chrome extension for the SchoolBox LMS with integrations for the Box of Books 
 ## Features
 
 - Launcher: A search bar for quick access to news articles and classes, as well as textbooks from Box of Books.
-   - You'll need to manually provide the RSS feed for your news headlines.
    - Search through book headings in Box of Books.
 - Dark theme: Dark theme for the SchoolBox website and its pages (still a work in progress)
 - News Chips: Replaces boring SchoolBox tabs in the news section with much more elegant chips and a search bar.
@@ -16,8 +15,6 @@ A Chrome extension for the SchoolBox LMS with integrations for the Box of Books 
 ### In progress
 
 - Frequently viewed pages: quick access for pages and resources you commonly access, separated by your class periods.
-
-### Upcocming
 
 ## Manual installation (via pre-built package)
 
