@@ -14,6 +14,7 @@ export async function init_settings(): Promise<void> {
         main_domain: "",
         inject_css: false,
         launcher_module: true,
+        launcher_module_shortcut: true,
         news_rss_feed: "",
         news_search_module: true,
         recents_list_module: true,

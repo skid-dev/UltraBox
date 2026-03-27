@@ -10,14 +10,14 @@ A Chrome extension for the SchoolBox LMS with integrations for the Box of Books 
 - Dark theme: Dark theme for the SchoolBox website and its pages (still a work in progress)
 - News Chips: Replaces boring SchoolBox tabs in the news section with much more elegant chips and a search bar.
 - Announcement / Post / News Item Edit history.
+- Automatic detection for the news headlines RSS feed.
+
 
 ### In progress
 
 - Frequently viewed pages: quick access for pages and resources you commonly access, separated by your class periods.
 
 ### Upcocming
-
-- Add automatic detection for the news headlines RSS feed.
 
 ## Manual installation (via pre-built package)
 
