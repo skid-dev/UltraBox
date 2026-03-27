@@ -97,6 +97,28 @@ export default async function on_update(tab_id: number, _: any, tab: chrome.tabs
 
     const settings = await get_stored_settings()
     if (!settings) return
+
+    if (settings.main_domain === "") {
+        // attempt to detect main domain via a special inject
+        await chrome.scripting.executeScript({
+            target: { tabId: tab_id },
+            files: ["detect_domain.js"],
+        })
+    }
+
+    const url_normalised = new URL(tab.url)
+    const main_domain_normalised = new URL(settings.main_domain)
+    if (
+        settings.news_rss_feed === "" &&
+        url_normalised.hostname === main_domain_normalised.hostname
+    ) {
+        // attempt to detect news rss feed via a special inject
+        await chrome.scripting.executeScript({
+            target: { tabId: tab_id },
+            files: ["detect_rss_feed.js"],
+        })
+    }
+
     for (let inject of INJECTS) {
         // setting check (supports sync or async)
         if (inject.setting) {

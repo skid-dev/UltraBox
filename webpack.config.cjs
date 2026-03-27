@@ -18,7 +18,9 @@ module.exports = (env, argv) => {
             inject_css_tools: "./src/content/inject_css_tools.ts",
             news_search_main: "./src/content/modules/news_search/news_search.ts",
             display_history: "./src/content/modules/post_history_tracking/content.ts",
-            history_puller: "./src/content/modules/post_history_tracking/puller.ts"
+            history_puller: "./src/content/modules/post_history_tracking/puller.ts",
+            detect_domain: "./src/content/auto_detection/detect_domain.ts",
+            detect_rss_feed: "./src/content/auto_detection/detect_rss_feed.ts",
         },
 
         output: {

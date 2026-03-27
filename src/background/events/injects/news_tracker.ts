@@ -8,7 +8,7 @@ export default <Module>{
         console.log("[News history] Fetching for changes to news posts...")
         await chrome.scripting.executeScript({
             target: { tabId: tab_id },
-            files: ["history_puller.ts"],
+            files: ["history_puller.js"],
         })
     },
 }
