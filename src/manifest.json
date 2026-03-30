@@ -3,7 +3,7 @@
     "name": "UltraBox",
     "version": "0.3",
     "description": "A Chrome extension for SchoolBox.",
-    "permissions": ["storage", "activeTab", "scripting", "tabs", "alarms", "unlimitedStorage"],
+    "permissions": ["storage", "activeTab", "scripting", "tabs", "unlimitedStorage"],
     "host_permissions": ["<all_urls>"],
     "background": {
         "service_worker": "background.js"
