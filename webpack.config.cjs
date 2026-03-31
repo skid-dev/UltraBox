@@ -24,7 +24,7 @@ module.exports = (env, argv) => {
         },
 
         output: {
-            path: path.resolve(__dirname, "dist"),
+            path: path.resolve(import.meta.dir, "dist"),
             filename: "[name].js",
             clean: true,
         },
