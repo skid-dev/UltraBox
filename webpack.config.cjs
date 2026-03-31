@@ -21,6 +21,7 @@ module.exports = (env, argv) => {
             history_puller: "./src/content/modules/post_history_tracking/puller.ts",
             detect_domain: "./src/content/auto_detection/detect_domain.ts",
             detect_rss_feed: "./src/content/auto_detection/detect_rss_feed.ts",
+            detect_schooltape: "./src/content/modules/detect_schooltape.ts",
         },
 
         output: {
