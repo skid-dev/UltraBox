@@ -5,18 +5,8 @@ export default <Module> {
     setting: s => {
         return !!s.news_search_module
     },
-    condition: async (tab_id, tab, settings) => {
-        const { current_domain, main_domain_hostname, is_homepage } = extract_hostnames(
-            tab.url!,
-            settings.main_domain
-        )
-
-        if (!main_domain_hostname || !current_domain?.includes(main_domain_hostname)) {
-            return false
-        }
-
-        if (!is_homepage) return false
-        return true
+    condition: async (_tab_id, _tab, _settings, is_page) => {
+        return is_page("/")
     },
     action: async (tab_id, _tab, _settings) => {
         await chrome.scripting.executeScript({

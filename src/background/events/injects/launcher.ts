@@ -1,5 +1,4 @@
 import { Module } from "../.../../../../types/module"
-import { extract_hostnames } from "../../functions/extract_hostname"
 
 export default <Module>{
     setting: async (s) => {

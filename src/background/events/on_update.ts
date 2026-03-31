@@ -128,6 +128,10 @@ export default async function on_update(tab_id: number, _: any, tab: chrome.tabs
 
         // condition check (supports sync or async)
         if (inject.condition) {
+            const base_objs = { tab_id, tab }
+            const helper_fns = {
+                is_page: (url_path: string) => is_page(tab.url!, url_path)
+            }
             const condition_valid = await Promise.resolve(
                 inject.condition(
                     tab_id,

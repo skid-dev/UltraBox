@@ -16,6 +16,7 @@ function inject_launcher_shortcut() {
     launcher_input_container.id = "schoolbox-launcher"
 
     const launcher_input_box = document.createElement("input")
+    launcher_input_box.autocomplete = "off"
     launcher_input_box.id = "schoolbox-launcher-search"
     launcher_input_box.placeholder = "What are you looking for?"
 
