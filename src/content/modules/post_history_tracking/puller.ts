@@ -8,5 +8,4 @@ async function main() {
 }
 
 main().then(() => {
-    console.log("[News history] Pull successful!")
 })

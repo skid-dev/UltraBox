@@ -3,6 +3,7 @@ import { IndexedItem } from "../../../types/indexed_item"
 import { lighten } from "../../functions/lighten"
 import { darken } from "../../functions/darken"
 import { Settings } from "../../../types/settings"
+import { check_in_schoolbox_domain } from "../../../background/functions/utls/is_page"
 
 export interface LauncherSearchResult {
     item: IndexedItem
@@ -98,8 +99,10 @@ export async function display_results(
     results: LauncherSearchResult[]
 ): Promise<void> {
     const stored_settings = await get_stored_settings()
-    const is_dark_mode = stored_settings?.inject_css ?? false
-
+    const is_schoolbox_domain = await check_in_schoolbox_domain(window.location.href)
+    const is_dark_mode =
+        stored_settings?.inject_css ||
+        (stored_settings?.schooltape_compatibility && is_schoolbox_domain)
     parent_div.innerHTML = ""
 
     for (let result of results) {

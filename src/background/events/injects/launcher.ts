@@ -4,17 +4,24 @@ export default <Module>{
     setting: async (s) => {
         return !!s.launcher_module
     },
-    condition: async (tab_id, tab, settings, is_page) => {
-        return is_page("/")
+    condition: async (_base, _settings, helper_fns) => {
+        return helper_fns.is_page("/")
     },
-    action: async (tab_id, tab, settings) => {
+    action: async (base, settings) => {
         await chrome.scripting.executeScript({
-            target: { tabId: tab_id },
+            target: { tabId: base.tab_id },
             files: ["content.js"],
         })
         await chrome.scripting.insertCSS({
-            target: { tabId: tab_id },
+            target: { tabId: base.tab_id },
             files: ["launcher_styles.css"],
         })
+
+        if (settings.schooltape_compatibility) {
+            await chrome.scripting.insertCSS({
+                target: { tabId: base.tab_id },
+                files: ["schooltape/launcher_styles.css"],
+            })
+        }
     },
 }

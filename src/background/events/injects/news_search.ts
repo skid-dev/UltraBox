@@ -5,18 +5,25 @@ export default <Module> {
     setting: s => {
         return !!s.news_search_module
     },
-    condition: async (_tab_id, _tab, _settings, is_page) => {
-        return is_page("/")
+    condition: async (_base, _settings, helper_fns) => {
+        return helper_fns.is_page("/")
     },
-    action: async (tab_id, _tab, _settings) => {
+    action: async (base, settings) => {
         await chrome.scripting.executeScript({
-            target: { tabId: tab_id },
+            target: { tabId: base.tab_id },
             files: ["news_search_main.js"],
         })
 
         await chrome.scripting.insertCSS({
-            target: { tabId: tab_id },
+            target: { tabId: base.tab_id },
             files: ["news_search_styles.css"],
         })
+
+        if (settings.schooltape_compatibility) {
+            await chrome.scripting.insertCSS({
+                target: { tabId: base.tab_id },
+                files: ["schooltape/news_search_styles.css"],
+            })
+        }
     },
 } satisfies Module

@@ -1,8 +1,7 @@
 import { poll_feed } from "../background/pull_feed"
 import { store_classes } from "./modules/launcher/getters/get_classes"
-import { get_news_channels, on_input, on_keydown } from "./modules/launcher/main"
-
-console.log("Content script loaded.")
+import { get_news_channels } from "./modules/launcher/main"
+import setup_launcher from "./modules/launcher/setup_launcher"
 
 // Function to inject the launcher
 function inject_launcher(): void {
@@ -38,21 +37,26 @@ function inject_launcher(): void {
     date_time_display.className = "schoolbox-date-time-display"
     // show the date as "HH:MM | Weekday, DD Mth"
     const now = new Date()
-    date_time_display.innerText = now.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-    }) + " | " + now.toLocaleDateString("en-GB", {
-        weekday: "long",
-        day: "2-digit",
-        month: "short",
-    })
+    date_time_display.innerText =
+        now.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+        }) +
+        " | " +
+        now.toLocaleDateString("en-GB", {
+            weekday: "long",
+            day: "2-digit",
+            month: "short",
+        })
     launcher_content_div.appendChild(date_time_display)
-    
+
     // timetable (if it exists)
     let timetable_element = document.querySelector("[data-timetable-container]") as HTMLElement
     if (timetable_element) {
         // remove the day indicator
-        let day_indicator = timetable_element.querySelector("[data-timetable-header]") as HTMLElement
+        let day_indicator = timetable_element.querySelector(
+            "[data-timetable-header]"
+        ) as HTMLElement
         if (day_indicator) {
             day_indicator.remove()
         }
@@ -60,34 +64,7 @@ function inject_launcher(): void {
         launcher_content_div.appendChild(timetable_element)
     }
 
-    // launcher box
-    const launcher_input_container = document.createElement("div")
-    launcher_input_container.id = "schoolbox-launcher"
-
-    const launcher_input_box = document.createElement("input")
-    launcher_input_box.autocomplete = "off"
-    launcher_input_box.id = "schoolbox-launcher-search"
-    launcher_input_box.placeholder = "What are you looking for?"
-
-    const launcher_results_wrapper = document.createElement("div")
-    launcher_results_wrapper.id = "schoolbox-launcher-results-wrapper"
-
-    const launcher_results = document.createElement("div")
-    launcher_results.id = "schoolbox-launcher-results"
-    launcher_results_wrapper.appendChild(launcher_results)
-
-    launcher_input_container.appendChild(launcher_input_box)
-    launcher_input_container.appendChild(launcher_results_wrapper)
-
-    // add the launcher to the page
-    launcher_content_div.appendChild(launcher_input_container)
-
-    // select the input field
-    launcher_input_box.addEventListener("input", on_input)
-    launcher_input_box.addEventListener("keydown", on_keydown)
-    launcher_input_box.focus()
-
-    console.log("Launcher injected.")
+    setup_launcher(launcher_content_div)
 }
 
 inject_launcher()

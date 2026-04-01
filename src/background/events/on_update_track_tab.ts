@@ -23,7 +23,6 @@ export async function on_open(tab_id: number, _: any, tab: chrome.tabs.Tab) {
 
     if (matching.length > 0) {
         const item = matching[0]
-        console.log("[Bounce Tracking] Found matching item for closed tab:", item.item.title)
         await update_item_vc_and_lvt(item.parent_channel, item.item.guid)
     }
 }
@@ -76,10 +75,7 @@ export async function on_close(tab_id: number) {
 
     if (matching.length > 0) {
         const item = matching[0]
-        console.log("[Bounce Tracking] Found matching item for closed tab:", item.item.title)
         await increment_item_bounce_count(item.parent_channel, item.item.guid)
-    } else {
-        console.log("[Bounce Tracking] No matching item found for closed tab URL:", closed_tab_url)
     }
 }
 

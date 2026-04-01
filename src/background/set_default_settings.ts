@@ -11,15 +11,19 @@ export async function init_settings(): Promise<void> {
     }
 
     const initial_settings: Settings = {
+        // settings
         main_domain: "",
+        news_rss_feed: "",
         inject_css: false,
+        schooltape_compatibility: true,
+
+        // modules
         launcher_module: true,
         launcher_module_shortcut: true,
-        news_rss_feed: "",
         news_search_module: true,
         recents_list_module: true,
         record_post_history: true,
-        record_setting_active: false
+        record_setting_active: false,
     }
     await chrome.storage.sync.set({ settings: initial_settings })
 

@@ -2,18 +2,11 @@ import type { Settings } from "../../types/settings"
 
 async function main() {
     if (document.querySelector("#ultrabox-rss-feed-detect-iframe")) {
-        console.log("RSS feed detection iframe already exists, skipping...")
         return
     }
 
-    console.log("[RSS feed detection] Starting RSS feed detection...")
-
     async function on_load() {
         const iframe_doc = iframe.contentDocument || iframe.contentWindow?.document
-        console.log(
-            "[RSS feed detection] Iframe loaded, searching for rss feed link...",
-            iframe_doc
-        )
 
         if (!iframe_doc) return
 
@@ -23,12 +16,10 @@ async function main() {
         })
 
         if (a_tags.length === 0) {
-            console.log("[RSS feed detection] No rss feed link found")
             return
         }
 
         const rss_feed_url = a_tags[0].href
-        console.log("[RSS feed detection] RSS feed link found:", rss_feed_url)
 
         // save the detected rss feed url to chrome storage
         const settings = (await chrome.storage.sync.get("settings"))["settings"] as Settings
@@ -69,7 +60,6 @@ async function main() {
     iframe.style.display = "none"
     document.body.appendChild(iframe)
 
-    console.log("[RSS feed detection] Waiting for iframe to load...", iframe)
 
     iframe.addEventListener("load", on_load)
 }

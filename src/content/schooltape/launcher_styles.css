@@ -1,0 +1,18 @@
+#schoolbox-launcher-search {
+    background-color: var(--foreground-colour);
+}
+
+#schoolbox-launcher-results-wrapper {
+    background-color: var(--foreground-colour) !important;
+}
+
+.ultrabox-launcher-item-parent:hover {
+    background-color: var(--content-ui-hover) !important;
+    outline: none !important;
+}
+
+.ultrabox-launcher-item-parent.ultrabox-launcher-item-active {
+    outline: 2px solid var(--sb-ck-active) !important;
+    background-color: var(--content-ui-hover) !important;
+}
+

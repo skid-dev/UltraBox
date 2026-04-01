@@ -161,6 +161,10 @@ function get_textbook_iframe_doc(): Document | null {
 }
 
 export async function on_input(ev: Event): Promise<void> {
+    if (!fuse) {
+        return
+    }
+
     const input_text = (ev.target as HTMLInputElement).value
 
     const parent_div = document.getElementById("schoolbox-launcher-results")

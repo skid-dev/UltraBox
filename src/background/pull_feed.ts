@@ -87,7 +87,6 @@ export const poll_feed = async (): Promise<void> => {
         let user_settings = (await chrome.storage.sync.get("settings"))["settings"] as Settings
 
         if (!user_settings.news_rss_feed) {
-            console.log("No RSS feed URL found in settings")
             return
         }
 
@@ -96,8 +95,6 @@ export const poll_feed = async (): Promise<void> => {
         const xml_doc = parser.parse(xml_text)
 
         await set_storage.ensure_channel_exists(STORAGE_KEY)
-
-        console.log("Pulling feed", user_settings.news_rss_feed)
 
         const items = xml_doc["rss"]["channel"]["item"] as RSSItem[]
         for (let item of items) {
@@ -108,9 +105,7 @@ export const poll_feed = async (): Promise<void> => {
             if (!existing_item) {
                 // if the item does not exist, add it to the storage
                 let success = await set_storage.add_item_to_channel(STORAGE_KEY, item_record)
-                console.log("Adding new item to channel:", item_record)
                 if (!success) {
-                    console.error("Failed to add item to channel", item_record)
                     continue
                 }
             } else {
@@ -152,9 +147,12 @@ export const poll_feed = async (): Promise<void> => {
                 continue
             }
         }
-
-        console.log("Pull successful, pulled", items.length, "items")
     } catch (err) {
+        if (err instanceof TypeError) {
+            // ignore failed to fetch
+            return
+        }
+
         console.error("rss poll failed", err)
     }
 }

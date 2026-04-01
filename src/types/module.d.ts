@@ -22,18 +22,29 @@ import { Settings } from "./settings"
  * @param {chrome.tabs.Tab} tab - The Chrome tab object containing tab metadata.
  * @param {Partial<Settings>} settings - The current module settings.
  * @returns {void | Promise<void>} No return value, or a promise that resolves when the action completes.
-*/
+ */
+
+interface Base {
+    tab_id: number
+    tab: chrome.tabs.Tab
+}
+
+interface HelperFunctions {
+    is_page: (url: string) => Promise<boolean>
+    is_schoolbox_page: boolean
+    url_begins_with: (prefix: string) => Promise<boolean>
+}
+
 export interface Module {
     setting?: (s: Partial<Settings>) => boolean | Promise<boolean>
     condition?: (
-        tab_id: number,
-        tab: chrome.tabs.Tab,
+        base: Base,
         settings: Partial<Settings>,
-        is_page: (url: string) => Promise<boolean>
+        helper_fns: HelperFunctions
     ) => boolean | Promise<boolean>
     action: (
-        tab_id: number,
-        tab: chrome.tabs.Tab,
-        settings: Partial<Settings>
+        base: Base,
+        settings: Partial<Settings>,
+        helper_fns: HelperFunctions
     ) => void | Promise<void>
 }

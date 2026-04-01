@@ -1,8 +1,11 @@
 import launcher from "../background/events/injects/launcher"
 import { get_news_channels, on_input, on_keydown } from "./modules/launcher/main"
+import setup_launcher from "./modules/launcher/setup_launcher"
 
 function inject_launcher_shortcut() {
     get_news_channels()
+
+    console.log("ran")
 
     // darkened background for launcher
     const launcher_popup_background = document.createElement("div")
@@ -12,39 +15,15 @@ function inject_launcher_shortcut() {
     const launcher_popup = document.createElement("div")
     launcher_popup.id = "ultrabox-launcher-popup-content-div"
 
-    const launcher_input_container = document.createElement("div")
-    launcher_input_container.id = "schoolbox-launcher"
-
-    const launcher_input_box = document.createElement("input")
-    launcher_input_box.autocomplete = "off"
-    launcher_input_box.id = "schoolbox-launcher-search"
-    launcher_input_box.placeholder = "What are you looking for?"
-
-    const launcher_results_wrapper = document.createElement("div")
-    launcher_results_wrapper.id = "schoolbox-launcher-results-wrapper"
-
-    const launcher_results = document.createElement("div")
-    launcher_results.id = "schoolbox-launcher-results"
-    launcher_results_wrapper.appendChild(launcher_results)
-
-    launcher_input_container.appendChild(launcher_input_box)
-    launcher_input_container.appendChild(launcher_results_wrapper)
-
-    // add the slauncher to the page
-    launcher_popup.appendChild(launcher_input_container)
-
     launcher_popup_background.appendChild(launcher_popup)
-
-    // select the input field
-    launcher_input_box.addEventListener("input", on_input)
-    launcher_input_box.addEventListener("keydown", on_keydown)
-
     document.body.appendChild(launcher_popup_background)
+
+    const input_elem = setup_launcher(launcher_popup)
 
     function enable_launcher() {
         launcher_popup_background.style.display = "block"
-        launcher_input_box.value = ""
-        launcher_input_box.focus()
+        input_elem.value = ""
+        input_elem.focus()
     }
 
     // listen for ctrl + k

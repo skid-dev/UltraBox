@@ -103,7 +103,24 @@ module.exports = (env, argv) => {
                         from: "src/content/modules/post_history_tracking/news_history.css",
                         to: "news_history.css",
                         noErrorOnMissing: false,
-                    }
+                    },
+
+                    // schooltape compatibility CSS
+                    {
+                        from: "src/content/schooltape/launcher_styles.css",
+                        to: "schooltape/launcher_styles.css",
+                        noErrorOnMissing: false,
+                    },
+                    {
+                        from: "src/content/schooltape/post_history_styles.css",
+                        to: "schooltape/post_history_styles.css",
+                        noErrorOnMissing: false,
+                    },
+                    {
+                        from: "src/content/schooltape/news_search_styles.css",
+                        to: "schooltape/news_search_styles.css",
+                        noErrorOnMissing: false,
+                    },
                 ],
             }),
         ],

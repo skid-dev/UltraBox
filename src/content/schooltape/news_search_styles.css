@@ -1,0 +1,8 @@
+#ultrabox-news-search {
+    background-color: var(--ctp-surface1) !important;
+}
+
+#ultrabox-news-category-display {
+    background-color: var(--sb-ck-active) !important;
+    color: var(--sb-ck-active-grey) !important;
+}

@@ -5,7 +5,9 @@ export interface Settings {
 
     // checkbox settings
     inject_css?: boolean
+    schooltape_compatibility?: boolean
 
+    // modules
     launcher_module?: boolean
     launcher_module_shortcut?: boolean
 

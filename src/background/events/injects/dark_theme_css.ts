@@ -5,9 +5,9 @@ export default <Module>{
     setting: async (s) => {
         return !!s.inject_css
     },
-    condition: async (tab_id, tab, settings) => {
+    condition: async (base, settings) => {
         const { current_domain, main_domain_hostname } = extract_hostnames(
-            tab.url!,
+            base.tab.url!,
             settings.main_domain
         )
 
@@ -16,13 +16,13 @@ export default <Module>{
         }
         return true
     },
-    action: async (tab_id, tab, settings) => {
+    action: async (base, settings) => {
         await chrome.scripting.insertCSS({
-            target: { tabId: tab_id },
+            target: { tabId: base.tab_id },
             files: ["inject.css"],
         })
         await chrome.scripting.executeScript({
-            target: { tabId: tab_id },
+            target: { tabId: base.tab_id },
             files: ["inject_css_tools.js"],
         })
     },

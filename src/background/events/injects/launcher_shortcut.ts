@@ -5,16 +5,16 @@ export default <Module>{
     setting: async s => {
         return !!s.launcher_module && !!s.launcher_module_shortcut
     },
-    condition: async (tab_id, tab, settings) => {
+    condition: async (base, settings) => {
         const { current_domain, main_domain_hostname, is_homepage } = extract_hostnames(
-            tab.url!,
+            base.tab.url!,
             settings.main_domain
         )
 
-        if (!tab.url) return false
+        if (!base.tab.url) return false
 
         // box of books
-        if (tab.url.includes(".boxofbooks.io/book/")) return true
+        if (base.tab.url.includes(".boxofbooks.io/book/")) return true
 
         if (!main_domain_hostname || !current_domain?.includes(main_domain_hostname)) {
             return false
@@ -23,14 +23,21 @@ export default <Module>{
         if (is_homepage) return false
         return true
     },
-    action: async (tab_id, tab, settings) => {
+    action: async (base, settings, helper_fns) => {
         await chrome.scripting.executeScript({
-            target: { tabId: tab_id },
+            target: { tabId: base.tab_id },
             files: ["launcher_shortcut.js"],
         })
         await chrome.scripting.insertCSS({
-            target: { tabId: tab_id },
+            target: { tabId: base.tab_id },
             files: ["launcher_styles.css"],
         })
+
+        if (settings.schooltape_compatibility && helper_fns.is_schoolbox_page) {
+            await chrome.scripting.insertCSS({
+                target: { tabId: base.tab_id },
+                files: ["schooltape/launcher_styles.css"],
+            })
+        }
     },
 }
