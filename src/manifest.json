@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "UltraBox",
-    "version": "0.3",
+    "version": "1.0.0",
     "description": "A Chrome extension for SchoolBox.",
     "permissions": ["storage", "activeTab", "scripting", "tabs", "unlimitedStorage"],
     "host_permissions": ["<all_urls>"],
@@ -20,11 +20,5 @@
             },
             "description": "Toggle UltraBox Launcher"
         }
-    },
-    "web_accessible_resources": [
-        {
-            "resources": ["inject.css"],
-            "matches": ["<all_urls>"]
-        }
-    ]
+    }
 }
