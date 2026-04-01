@@ -1,6 +1,6 @@
 {
   "name": "schoolbox-chrome-extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Chrome extension for SchoolBox built with TypeScript, React, and Bun.",
   "main": "src/background/background.ts",
   "scripts": {
