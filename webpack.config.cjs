@@ -9,11 +9,15 @@ module.exports = (env, argv) => {
         mode: isDevelopment ? "development" : "production",
         devtool: isDevelopment ? "cheap-module-source-map" : "source-map",
 
+        performance: {
+            hints: false,
+        },
+
         entry: {
             popup: "./src/popup/popup.ts",
             background: "./src/background/background.ts",
-            content: "./src/content/content.ts",
-            launcher_shortcut: "./src/content/launch_shortcut.ts",
+            launcher_homepage: "./src/content/modules/launcher/launch_homepage.ts",
+            launcher_shortcut: "./src/content/modules/launcher/launch_shortcut.ts",
             get_textbooks: "./src/content/modules/launcher/getters/get_textbooks.ts",
             inject_css_tools: "./src/content/inject_css_tools.ts",
             news_search_main: "./src/content/modules/news_search/news_search.ts",
@@ -68,6 +72,7 @@ module.exports = (env, argv) => {
             }),
             new CopyWebpackPlugin({
                 patterns: [
+                    // essential chrome extension files
                     {
                         from: "src/manifest.json",
                         to: "manifest.json",
@@ -79,6 +84,8 @@ module.exports = (env, argv) => {
                         noErrorOnMissing: true,
                         globOptions: { ignore: ["**/.*"] },
                     },
+
+                    // popup and stylessheet injects
                     {
                         from: "src/popup/styles.css",
                         to: "styles.css",
@@ -89,16 +96,22 @@ module.exports = (env, argv) => {
                         to: "inject.css",
                         noErrorOnMissing: false,
                     },
+
+                    // modules -> launcher
                     {
-                        from: "src/content/launcher_styles.css",
+                        from: "src/content/modules/launcher/launcher_styles.css",
                         to: "launcher_styles.css",
                         noErrorOnMissing: false,
                     },
+
+                    // modules -> news search
                     {
                         from: "src/content/modules/news_search/news_search.css",
                         to: "news_search_styles.css",
                         noErrorOnMissing: false,
                     },
+
+                    // modules -> post history tracking
                     {
                         from: "src/content/modules/post_history_tracking/news_history.css",
                         to: "news_history.css",

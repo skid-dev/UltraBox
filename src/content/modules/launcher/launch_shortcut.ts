@@ -1,6 +1,6 @@
-import launcher from "../background/events/injects/launcher"
-import { get_news_channels, on_input, on_keydown } from "./modules/launcher/main"
-import setup_launcher from "./modules/launcher/setup_launcher"
+import launcher from "../../../background/events/injects/launcher"
+import { get_news_channels, on_input, on_keydown } from "./main"
+import setup_launcher from "./setup_launcher"
 
 function inject_launcher_shortcut() {
     get_news_channels()
