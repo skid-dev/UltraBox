@@ -10,7 +10,7 @@ export default <Module>{
     action: async (base, settings) => {
         await chrome.scripting.executeScript({
             target: { tabId: base.tab_id },
-            files: ["content.js"],
+            files: ["launcher_homepage.js"],
         })
         await chrome.scripting.insertCSS({
             target: { tabId: base.tab_id },
