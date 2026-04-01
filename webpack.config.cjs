@@ -9,6 +9,10 @@ module.exports = (env, argv) => {
         mode: isDevelopment ? "development" : "production",
         devtool: isDevelopment ? "cheap-module-source-map" : "source-map",
 
+        performance: {
+            hints: false,
+        },
+
         entry: {
             popup: "./src/popup/popup.ts",
             background: "./src/background/background.ts",
@@ -92,7 +96,7 @@ module.exports = (env, argv) => {
                         to: "inject.css",
                         noErrorOnMissing: false,
                     },
-                    
+
                     // modules -> launcher
                     {
                         from: "src/content/modules/launcher/launcher_styles.css",
