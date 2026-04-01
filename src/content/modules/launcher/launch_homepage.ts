@@ -1,7 +1,7 @@
-import { poll_feed } from "../background/pull_feed"
-import { store_classes } from "./modules/launcher/getters/get_classes"
-import { get_news_channels } from "./modules/launcher/main"
-import setup_launcher from "./modules/launcher/setup_launcher"
+import { poll_feed } from "../../../background/pull_feed"
+import { store_classes } from "./getters/get_classes"
+import { get_news_channels } from "./main"
+import setup_launcher from "./setup_launcher"
 
 // Function to inject the launcher
 function inject_launcher(): void {
