@@ -101,7 +101,7 @@
 .ub-view-text-button {
     appearance: none;
     all: unset;
-    border: 1px solid #8ca6d8;
+    margin: 1px solid #8ca6d8;
     border-radius: 0;
     background: #f5f8ff;
     color: #2859ad;
@@ -171,6 +171,7 @@
     padding: 16px;
     border: 2px solid #9f3300;
     border-left-width: 8px;
+    color: #5a2200;
 }
 
 #ub-diff-title {

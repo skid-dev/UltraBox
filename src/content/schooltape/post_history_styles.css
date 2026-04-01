@@ -2,6 +2,8 @@
     background-color: var(--content-ui-background) !important;
 }
 
-#ub-view-text-button {
-    
+.ub-view-text-button {
+    background-color: hsl(var(--ctp-surface1)) !important;
+    outline: 1px solid hsl(var(--ctp-accent)) !important;
+    color: var(--color-text-secondary) !important;
 }
