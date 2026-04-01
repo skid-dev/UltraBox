@@ -4,6 +4,9 @@ A Chrome extension for the SchoolBox LMS with integrations for the Box of Books 
 
 ## Features
 
+**SchoolTape users: Please enable __SchoolTape compatibility__ in the extension settings to ensure proper styling of elements created by modules in this extension!
+| This is a temporary workaround while automatic SchoolTape detection is still work in progress.
+
 - Launcher: A search bar for quick access to news articles and classes, as well as textbooks from Box of Books.
    - Search through book headings in Box of Books.
 - Dark theme: Dark theme for the SchoolBox website and its pages (still a work in progress)
