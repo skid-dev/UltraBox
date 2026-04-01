@@ -4,6 +4,7 @@ import { lighten } from "../../functions/lighten"
 import { darken } from "../../functions/darken"
 import { Settings } from "../../../types/settings"
 import { check_in_schoolbox_domain } from "../../../background/functions/utls/is_page"
+import { get_theme, rgb_to_hex } from "./detect_dark_theme"
 
 export interface LauncherSearchResult {
     item: IndexedItem
@@ -102,7 +103,8 @@ export async function display_results(
     const is_schoolbox_domain = await check_in_schoolbox_domain(window.location.href)
     const is_dark_mode =
         stored_settings?.inject_css ||
-        (stored_settings?.schooltape_compatibility && is_schoolbox_domain)
+        (is_schoolbox_domain &&
+            get_theme(rgb_to_hex(getComputedStyle(document.body).backgroundColor)) === "dark")
     parent_div.innerHTML = ""
 
     for (let result of results) {
