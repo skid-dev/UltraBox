@@ -21,8 +21,6 @@ A Chrome extension for the SchoolBox LMS with integrations for the Box of Books 
 
 ## Manual installation (via pre-built package)
 
-# Builds for this extension are coming soon
-
 ### For chrome and chromium based browsers
  1. Download the latest release (or a specific version you wish to install)
  1. Unzip the file
