@@ -62,7 +62,6 @@ function set_news_tabs_html() {
         const available_categories = news_tabs_categories.filter(cat =>
             cat.toLowerCase().includes(search_term)
         )
-        console.log(search_term, news_tabs_categories, available_categories)
 
         news_search_autocomplete.innerHTML = ""
         for (let category of available_categories) {

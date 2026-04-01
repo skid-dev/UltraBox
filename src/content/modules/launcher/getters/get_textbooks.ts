@@ -4,8 +4,6 @@ import { ItemRecord } from "../../../../types/item_record"
 
 const STORAGE_KEY = "bob"
 
-console.log("[UltraBox] Indexing textbooks...")
-
 function get_textbooks(): TextbookEntry[] {
     let book_elements = Array.from(document.querySelectorAll(`#book-box .page-search-item`))
 
@@ -14,7 +12,6 @@ function get_textbooks(): TextbookEntry[] {
         let title = book.querySelector(".card-body")?.children[0]?.textContent?.trim() ?? "Untitled"
         let link = book.querySelector("a")?.href ?? ""
 
-        console.log(title, link)
         let link_full = new URL(link.replace("/bookdetail", "/webreader"), window.location.origin)
         let textbook_entry: TextbookEntry = {
             name: title,
@@ -47,4 +44,3 @@ let textbooks = get_textbooks()
 })()
 
 set_storage.ensure_channel_exists(STORAGE_KEY)
-console.log(`[UltraBox] Indexed ${textbooks.length} textbooks.`)

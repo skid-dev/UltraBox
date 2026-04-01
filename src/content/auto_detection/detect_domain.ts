@@ -1,8 +1,6 @@
 import type { Settings } from "../../types/settings"
 
 async function main() {
-    console.log("Detecting main domain...")
-
     if (document.querySelector("ultrabox-domain-detect-banner")) {
         return
     }

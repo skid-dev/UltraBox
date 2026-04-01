@@ -8,7 +8,6 @@ export async function get_textbook_headings(): Promise<IndexedItem[]> {
             // check if the elements exist
             const web_viewer: HTMLIFrameElement | null = document.getElementById("webviewer-1") as HTMLIFrameElement
             if (!web_viewer) {
-                console.log("Waiting for web viewer to load...")
                 tries_left--
                 if (tries_left <= 0) {
                     reject(new Error("Web viewer not available"))
@@ -17,7 +16,6 @@ export async function get_textbook_headings(): Promise<IndexedItem[]> {
             }
             const web_doc = web_viewer.contentDocument || web_viewer.contentWindow?.document
             if (!web_doc) {
-                console.log("Waiting for web viewer document to load...")
                 tries_left--
                 if (tries_left <= 0) {
                     reject(new Error("Web viewer document not available"))
@@ -26,8 +24,6 @@ export async function get_textbook_headings(): Promise<IndexedItem[]> {
             }
 
             if (web_doc.querySelectorAll(".Outline .arrow").length === 0) {
-                console.log(web_doc.querySelectorAll(".Outline .arrow"))
-                console.log("Waiting for outline elements to load...")
                 return
             }
 
@@ -58,6 +54,5 @@ export async function get_textbook_headings(): Promise<IndexedItem[]> {
             }
         })
 
-    console.log("Extracted textbook headings", headings)
     return headings
 }

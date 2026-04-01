@@ -5,8 +5,6 @@ import setup_launcher from "./modules/launcher/setup_launcher"
 function inject_launcher_shortcut() {
     get_news_channels()
 
-    console.log("ran")
-
     // darkened background for launcher
     const launcher_popup_background = document.createElement("div")
     launcher_popup_background.id = "ultrabox-launcher-background-div"

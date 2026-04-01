@@ -16,10 +16,8 @@ let is_bob = window.location.href.includes(".boxofbooks.io/book/")
 
 export async function get_news_channels(): Promise<void> {
     let all_channels = await get_storage.get_all_news_channels()
-    console.log("Indexing channels", all_channels)
     for (let channel of all_channels) {
         let items = await get_storage.get_news_channel(channel)
-        console.log("Channel", channel, "has", items.length, "items")
         items_index = items_index.concat(
             items.map(item => {
                 return {
@@ -32,7 +30,6 @@ export async function get_news_channels(): Promise<void> {
 
     if (is_bob) {
         let headings = await get_textbook_headings()
-        console.log("Adding textbook headings to index", headings)
         items_index = items_index.concat(headings)
     }
 
@@ -269,8 +266,6 @@ export function on_keydown(ev: KeyboardEvent): void {
             ).filter(
                 el => el.querySelector("span")?.textContent === heading_text
             ) as HTMLButtonElement[]
-
-            console.log("Navigating to textbook chapter", heading_text, heading_elements)
 
             if (heading_elements.length > 0) {
                 heading_elements[0].click()

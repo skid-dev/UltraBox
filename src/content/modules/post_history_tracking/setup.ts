@@ -18,7 +18,6 @@ async function fetch_versions(guid: string): Promise<RevisionHistoryEntry[]> {
     const news_item = await get_news_item("news", base_guid)
 
     if (!news_item || !news_item.rev_history_uuids) {
-        console.log("No news item found for guid:", base_guid)
         return []
     }
 
@@ -27,7 +26,6 @@ async function fetch_versions(guid: string): Promise<RevisionHistoryEntry[]> {
     for (let rev_id of news_item.rev_history_uuids) {
         const data = await get_revision(rev_id)
         if (!data) {
-            console.log("Null pointer for revision id:", rev_id)
             await remove_null_revisions(base_guid)
             continue
         }
