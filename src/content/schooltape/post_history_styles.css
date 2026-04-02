@@ -8,6 +8,17 @@
     color: var(--color-text-secondary) !important;
 }
 
+.ultrabox-revision-wrapper::after {
+    background: hsl(var(--ctp-accent)) !important;
+}
+
+.ultrabox-revision-wrapper::before {
+    border: hsl(var(--ctp-accent)) !important;
+    border-radius: 999px;
+    background: hsl(var(--ctp-accent)) !important;
+    border: hsl(var(--ctp-accent)) !important;
+}
+
 ins.diffmod {
     background-color: var(--ck-custom-green) !important;
 }
