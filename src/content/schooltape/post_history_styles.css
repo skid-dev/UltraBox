@@ -7,3 +7,11 @@
     outline: 1px solid hsl(var(--ctp-accent)) !important;
     color: var(--color-text-secondary) !important;
 }
+
+ins.diffmod {
+    background-color: var(--ck-custom-green) !important;
+}
+
+del.diffmod {
+    background-color: var(--ck-custom-red) !important;
+}
