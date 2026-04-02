@@ -16,7 +16,7 @@ export async function add_url_to_recents(url: string, name: string): Promise<voi
     url = url.split("#")[0].split("?")[0]
 
     let data = await chrome.storage.local.get(RECENTS_KEY)
-    let recents: RecentsEntry[] = data[RECENTS_KEY]
+    let recents: RecentsEntry[] = data[RECENTS_KEY] as RecentsEntry[] || []
     const now = Date.now()
     
     let existing_entry: RecentsEntry | undefined = recents.find(entry => entry.url === url)
@@ -46,7 +46,7 @@ export async function get_recents(): Promise<RecentsEntry[]> {
     await ensure_recents_exists()
 
     let data = await chrome.storage.local.get(RECENTS_KEY)
-    let recents: RecentsEntry[] = data[RECENTS_KEY]
+    let recents: RecentsEntry[] = data[RECENTS_KEY] as RecentsEntry[] || []
     return recents
 }
 

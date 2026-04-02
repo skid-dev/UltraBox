@@ -30,7 +30,7 @@ export async function add_item_to_channel(channel_name: string, item: ItemRecord
         return false
     }
 
-    const channel_items: ItemRecord[] = channel_data[channel_key] || []
+    const channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
 
     // Check if the item already exists in the channel
     const item_exists = channel_items.some(existing_item => existing_item.guid === item.guid)
@@ -59,7 +59,7 @@ export async function update_item_properties(
         return
     }
 
-    let channel_items: ItemRecord[] = channel_data[channel_key] || []
+    let channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
 
     // Update the item properties
     channel_items = channel_items.map(item => {
@@ -83,7 +83,7 @@ export async function update_item_vc_and_lvt(channel_name: string, item_guid: st
         return null
     }
 
-    let channel_items: ItemRecord[] = channel_data[channel_key] || []
+    let channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
     
     // Increment the view count for the specified item
     let updated_view_count: number | null = null
@@ -109,7 +109,7 @@ export async function increment_item_bounce_count(channel_name: string, item_gui
         return
     }
 
-    let channel_items: ItemRecord[] = channel_data[channel_key] || []
+    let channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
     
     // Increment the bounce count for the specified item
     channel_items = channel_items.map(item => {
@@ -132,7 +132,7 @@ export async function add_revision_history_entry(channel_name: string, item_guid
         return []
     }
 
-    let channel_items: ItemRecord[] = channel_data[channel_key] || []
+    let channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
     
     // Add the revision ID to the item's revision history
     let updated_rev_history: string[] = []
@@ -159,7 +159,7 @@ export async function remove_item_from_channel(channel_name: string, item_guid: 
         return
     }
 
-    let channel_items: ItemRecord[] = channel_data[channel_key] || []
+    let channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
 
     // Remove the item from the channel
     channel_items = channel_items.filter(item => item.guid !== item_guid)
@@ -180,7 +180,7 @@ export async function add_if_not_exists(
         return false
     }
 
-    let channel_items: ItemRecord[] = channel_data[channel_key] || []
+    let channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
 
     // Check if the item already exists in the channel
     const item_exists = channel_items.some(existing_item => existing_item.guid === item_guid)
