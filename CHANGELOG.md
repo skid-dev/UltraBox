@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/skid-dev/UltraBox/compare/v1.1.0...v1.1.1) (2026-04-02)
+
+
+### Bug Fixes
+
+* Fix diff not showing in schooltape compatibility mode. ([0960489](https://github.com/skid-dev/UltraBox/commit/0960489071150826f80f61077613ce0883c1c603))
+
 # [1.1.0](https://github.com/skid-dev/UltraBox/compare/v1.0.1...v1.1.0) (2026-04-01)
 
 
