@@ -1,4 +1,4 @@
-import { darken } from "./functions/darken"
+import { darken } from "./modules/launcher/functions/darken"
 
 function set_timetable_bg() {
     const timetable_elements = Array.from(
