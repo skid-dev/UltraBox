@@ -2,8 +2,9 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "lib": ["DOM", "ESNext"],
+    "types": ["chrome"],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,

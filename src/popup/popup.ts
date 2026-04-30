@@ -52,7 +52,7 @@ function applyTheme(theme: string) {
 
 // Load settings
 chrome.storage.sync.get(["settings", "theme"], result => {
-    const settings: Settings = result.settings
+    const settings = result.settings as Settings | undefined
     if (!settings) return
 
     // load input settings

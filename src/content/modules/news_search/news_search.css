@@ -26,11 +26,8 @@
     position: absolute;
     background-color: #1f2230;
     color: #f8f9ff;
-    border: 1px solid rgba(78, 161, 255, 0.35);
-    border-radius: 10px;
-    padding: 6px 0;
+    outline: 1px solid rgba(78, 161, 255, 0.35);
     min-width: 220px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
     z-index: 1000;
 }
 
@@ -40,6 +37,16 @@
     color: inherit;
     cursor: pointer;
     transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.ultrabox-news-search-autocomplete-item:nth-child(1) {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.ultrabox-news-search-autocomplete-item:last-child {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .ultrabox-news-search-autocomplete-item + .ultrabox-news-search-autocomplete-item {

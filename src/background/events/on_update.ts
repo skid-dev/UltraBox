@@ -8,6 +8,7 @@ import box_of_books from "./injects/box_of_books"
 import launcher_shortcut from "./injects/launcher_shortcut"
 import news_tracker_fetch from "./injects/news_tracker"
 import news_tracker_display from "./injects/display_history"
+import detect_schooltape from "./injects/st_detect_inject"
 
 const INJECTS = [
     dark_theme_css,
@@ -17,6 +18,7 @@ const INJECTS = [
     launcher_shortcut,
     news_tracker_fetch,
     news_tracker_display,
+    detect_schooltape
 ]
 
 export default async function on_update(tab_id: number, _: any, tab: chrome.tabs.Tab) {

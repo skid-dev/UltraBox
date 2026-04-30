@@ -16,7 +16,7 @@ function inject_launcher_shortcut() {
     launcher_popup_background.appendChild(launcher_popup)
     document.body.appendChild(launcher_popup_background)
 
-    const input_elem = setup_launcher(launcher_popup)
+    const input_elem = setup_launcher(launcher_popup, false)
 
     function enable_launcher() {
         launcher_popup_background.style.display = "block"

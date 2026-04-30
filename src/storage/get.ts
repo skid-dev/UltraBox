@@ -9,7 +9,7 @@ export async function get_all_news_channels(): Promise<string[]> {
 
 export async function get_news_channel(channel_name: string): Promise<ItemRecord[]> {
     const news_channel = await chrome.storage.local.get(`news_channel_${channel_name}`)
-    return news_channel[`news_channel_${channel_name}`] || []
+    return news_channel[`news_channel_${channel_name}`] as ItemRecord[] || []
 }
 
 export async function get_news_item(
