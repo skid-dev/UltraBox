@@ -64,7 +64,7 @@ function inject_launcher(): void {
         launcher_content_div.appendChild(timetable_element)
     }
 
-    setup_launcher(launcher_content_div)
+    setup_launcher(launcher_content_div, true)
 }
 
 inject_launcher()

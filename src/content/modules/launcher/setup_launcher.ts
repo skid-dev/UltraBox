@@ -1,6 +1,6 @@
 import { on_input, on_keydown } from "./main"
 
-export default function setup_launcher(parent: HTMLDivElement): HTMLInputElement {
+export default function setup_launcher(parent: HTMLDivElement, focus=false): HTMLInputElement {
     const launcher_input_container = document.createElement("div")
     launcher_input_container.id = "schoolbox-launcher"
 
@@ -25,7 +25,9 @@ export default function setup_launcher(parent: HTMLDivElement): HTMLInputElement
     // select the input field
     launcher_input_box.addEventListener("input", on_input)
     launcher_input_box.addEventListener("keydown", on_keydown)
-    launcher_input_box.focus()
+    if (focus) {
+        launcher_input_box.focus()
+    }
 
     return launcher_input_box
 }
