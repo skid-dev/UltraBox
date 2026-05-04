@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/skid-dev/UltraBox/compare/v1.2.0...v1.2.1) (2026-05-04)
+
+
+### Bug Fixes
+
+* Fix memory issues with large diffs ([e296a8e](https://github.com/skid-dev/UltraBox/commit/e296a8e14f1d96b6d397b32cb6d027bbb8897f4b))
+
 # [1.2.0](https://github.com/skid-dev/UltraBox/compare/v1.1.1...v1.2.0) (2026-04-30)
 
 
