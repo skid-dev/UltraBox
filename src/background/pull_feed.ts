@@ -65,7 +65,7 @@ async function append_revision(
     }
 
     const now = Date.now()
-    const { new_lines, modified_lines, deleted_lines } = await calculate_new_metrics(
+    const { added_chars, removed_chars, unchanged_chars } = await calculate_new_metrics(
         prev_data_obj,
         rev_object
     )
@@ -74,9 +74,9 @@ async function append_revision(
         guid,
         prev_data_obj,
         now,
-        new_lines,
-        modified_lines,
-        deleted_lines
+        added_chars,
+        removed_chars,
+        unchanged_chars
     )
 
     return data.rev_id
