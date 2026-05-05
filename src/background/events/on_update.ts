@@ -1,4 +1,9 @@
-import { check_in_schoolbox_domain, get_stored_settings, is_page, url_begins_with } from "../functions/utls/is_page"
+import {
+    check_in_schoolbox_domain,
+    get_stored_settings,
+    is_page,
+    url_begins_with,
+} from "../functions/utls/is_page"
 import track_page_if_in_domain from "../functions/utls/track_page"
 
 import dark_theme_css from "./injects/dark_theme_css"
@@ -9,6 +14,7 @@ import launcher_shortcut from "./injects/launcher_shortcut"
 import news_tracker_fetch from "./injects/news_tracker"
 import news_tracker_display from "./injects/display_history"
 import detect_schooltape from "./injects/st_detect_inject"
+import reduce_width from "./injects/reduce_width"
 
 const INJECTS = [
     dark_theme_css,
@@ -18,7 +24,8 @@ const INJECTS = [
     launcher_shortcut,
     news_tracker_fetch,
     news_tracker_display,
-    detect_schooltape
+    detect_schooltape,
+    reduce_width,
 ]
 
 export default async function on_update(tab_id: number, _: any, tab: chrome.tabs.Tab) {
