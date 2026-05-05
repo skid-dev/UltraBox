@@ -10,6 +10,7 @@ export interface Settings {
     // modules
     launcher_module?: boolean
     launcher_module_shortcut?: boolean
+    reduce_timetable_width?: boolean
 
     news_search_module?: boolean
     recents_list_module?: boolean
