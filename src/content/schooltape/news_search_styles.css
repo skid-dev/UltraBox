@@ -14,7 +14,13 @@
     border-radius: 10px 10px !important;
 }
 
-.ultrabox-news-search-autocomplete-item:hover {
+.ultrabox-news-search-autocomplete-item:hover,
+.ultrabox-news-search-autocomplete-item.ultrabox-news-search-autocomplete-item-active {
     background-color: hsl(var(--ctp-accent)) !important;
     color: hsl(var(--ctp-crust)) !important;
+}
+
+.ultrabox-news-search-autocomplete-hint {
+    color: hsl(var(--ctp-crust)) !important;
+    opacity: 0.75;
 }
