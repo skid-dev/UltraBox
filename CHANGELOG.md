@@ -1,3 +1,17 @@
+# [1.3.0](https://github.com/skid-dev/UltraBox/compare/v1.2.1...v1.3.0) (2026-05-05)
+
+
+### Bug Fixes
+
+* Remove inject for pulling RSS feed ([faa111f](https://github.com/skid-dev/UltraBox/commit/faa111fad47880e55772d536b82674ebada0c48a))
+
+
+### Features
+
+* Add option to change width of launcher ([2fa2492](https://github.com/skid-dev/UltraBox/commit/2fa249247432beff53e1877a5f37fcbe99e13b4c))
+* Keyboard navigation for news search autocomplete ([b1e7efa](https://github.com/skid-dev/UltraBox/commit/b1e7efadcbfcbf31ea509042b601e18843df8676))
+* Reduce content width module ([1736083](https://github.com/skid-dev/UltraBox/commit/1736083b3d055bfef144f3d1d2cb20f67146b4b4))
+
 ## [1.2.1](https://github.com/skid-dev/UltraBox/compare/v1.2.0...v1.2.1) (2026-05-04)
 
 
