@@ -66,17 +66,6 @@
     color: inherit;
 }
 
-#schoolbox-launcher-background-div {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-}
-
-#schoolbox-launcher-content-div {
-    width: min(900px, 90%);
-    margin-top: 40px;
-}
-
 .Component_Dashboard_GreetingController h1 {
     margin: 0;
 }

@@ -20,7 +20,10 @@ export async function init_settings(): Promise<void> {
         // modules
         launcher_module: true,
         launcher_module_shortcut: true,
+        reduce_timetable_width: false,
+
         news_search_module: true,
+
         recents_list_module: true,
         record_post_history: true,
         record_setting_active: false,
@@ -30,7 +33,10 @@ export async function init_settings(): Promise<void> {
     await poll_feed()
 }
 
-export async function set_setting<K extends keyof Settings>(key: K, value: Settings[K]): Promise<void> {
+export async function set_setting<K extends keyof Settings>(
+    key: K,
+    value: Settings[K]
+): Promise<void> {
     const current_settings = await chrome.storage.sync.get("settings")
     if (!current_settings.settings) {
         console.error("Settings not initialized yet.")

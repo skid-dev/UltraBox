@@ -14,14 +14,15 @@ function collect_news_categories(): void {
 }
 
 function collect_news_items(): void {
-    news_items = Array.from(
-        document.querySelectorAll(".information-list .actions-small-1")
-    ).map(elem => {
-        return {
-            elem: elem as HTMLLIElement,
-            category_string: elem.querySelector(`a[href^="/news?topic"]`)?.textContent?.trim() ?? null,
+    news_items = Array.from(document.querySelectorAll(".information-list .actions-small-1")).map(
+        elem => {
+            return {
+                elem: elem as HTMLLIElement,
+                category_string:
+                    elem.querySelector(`a[href^="/news?topic"]`)?.textContent?.trim() ?? null,
+            }
         }
-    })
+    )
 }
 
 collect_news_categories()
@@ -41,9 +42,7 @@ function get_matching_categories(search_term: string): string[] {
 
 function get_autocomplete_items(): HTMLElement[] {
     return Array.from(
-        news_search_autocomplete.getElementsByClassName(
-            "ultrabox-news-search-autocomplete-item"
-        )
+        news_search_autocomplete.getElementsByClassName("ultrabox-news-search-autocomplete-item")
     ) as HTMLElement[]
 }
 
@@ -283,7 +282,7 @@ function run_when_ready(): boolean {
     }
 
     if (news_tabs_categories.length === 0) {
-        return false  // don't load if there are no categories yet
+        return false // don't load if there are no categories yet
     }
 
     if (document.querySelector("#ultrabox-news-search")) {

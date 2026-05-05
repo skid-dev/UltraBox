@@ -1,14 +1,22 @@
+import { get_stored_settings } from "../../../background/functions/utls/is_page"
 import { poll_feed } from "../../../background/pull_feed"
 import { store_classes } from "./getters/get_classes"
 import { get_news_channels } from "./main"
 import setup_launcher from "./setup_launcher"
 
 // Function to inject the launcher
-function inject_launcher(): void {
-    // Check if launcher already exists
-    if (document.getElementById("schoolbox-launcher")) {
+async function inject_launcher(): Promise<void> {
+    if (document.getElementById("ultrabox-launcher-injected-marker")) {
+        // launcher already injected, no need to inject again
         return
     }
+
+    const marker = document.createElement("div")
+    marker.id = "ultrabox-launcher-injected-marker"
+    document.body.appendChild(marker)
+
+    // Check if launcher already exists
+    const settings = await get_stored_settings()
     get_news_channels()
     poll_feed()
 
@@ -24,6 +32,11 @@ function inject_launcher(): void {
     launcher_content_div.id = "schoolbox-launcher-content-div"
     launcher_content_div.className = "schoolbox-launcher-content-div"
     launcher_div.appendChild(launcher_content_div)
+    launcher_div.style.marginTop = "40px"
+
+    if (settings?.reduce_timetable_width) {
+        launcher_div.style.width = "min(900px, 90%)"
+    }
 
     // move elements on the main page to this new launcher div
     // greeting heading

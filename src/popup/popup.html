@@ -65,15 +65,23 @@
                 </div>
 
                 <div class="setting">
-                    <div class="setting-container toggle-setting" data-setting-var="schooltape_compatibility">
+                    <div
+                        class="setting-container toggle-setting"
+                        data-setting-var="schooltape_compatibility"
+                    >
                         <label for="schooltapeCompatibility">Schooltape compatibility</label>
                         <label class="toggle-switch">
-                            <input type="checkbox" id="schooltapeCompatibility" name="schooltapeCompatibility" />
+                            <input
+                                type="checkbox"
+                                id="schooltapeCompatibility"
+                                name="schooltapeCompatibility"
+                            />
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
                     <div class="setting-description">
-                        Enable style compatibility with Schooltape. This disables some styles and uses Schooltape styles instead.
+                        Enable style compatibility with Schooltape. This disables some styles and
+                        uses Schooltape styles instead.
                     </div>
                 </div>
 
@@ -121,6 +129,25 @@
                         <div class="module-description">
                             Enable the Ctrl + K shortcut to open the launcher from any Schoolbox /
                             Box of Books page
+                        </div>
+                    </div>
+
+                    <div
+                        class="setting-container toggle-setting"
+                        data-setting-var="reduce_timetable_width"
+                        data-dependent-setting="launcher_module"
+                    >
+                        <label for="reduceTimetableWidth">Reduce Timetable Width</label>
+                        <label class="toggle-switch">
+                            <input
+                                type="checkbox"
+                                id="reduceTimetableWidth"
+                                name="reduceTimetableWidth"
+                            />
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div class="module-description">
+                            Shrink the width of the timetable when the launcher is enabled.
                         </div>
                     </div>
                 </div>
