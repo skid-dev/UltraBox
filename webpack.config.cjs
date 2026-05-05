@@ -119,6 +119,13 @@ module.exports = (env, argv) => {
                         noErrorOnMissing: false,
                     },
 
+                    // modules -> reduce width
+                    {
+                        from: "src/content/modules/reduce_width/reduce_width.css",
+                        to: "reduce_width.css",
+                        noErrorOnMissing: false,
+                    },
+
                     // schooltape compatibility CSS
                     {
                         from: "src/content/schooltape/launcher_styles.css",

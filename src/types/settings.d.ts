@@ -18,6 +18,8 @@ export interface Settings {
     record_post_history?: boolean
     record_setting_active?: boolean
 
+    reduce_content_width?: boolean
+
     // typescript likes to do its own thing sometimes
     [key: string]: string | boolean | undefined
 }
