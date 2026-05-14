@@ -1,6 +1,6 @@
 import { IndexedItem } from "../../../../../types/indexed_item"
 
-const MAX_BOUNCE_RATE_BOOST = 0.15
+const MAX_BOUNCE_RATE_BOOST = 0.45
 
 export function get_bounce_rate_boost(item: IndexedItem): number {
     if (!item.item.view_count || item.item.bounce_count === undefined) return 0

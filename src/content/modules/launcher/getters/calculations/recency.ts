@@ -1,5 +1,5 @@
 const RECENCY_DECAY_MS = 1000 * 60 * 60 * 24 * 3 // recency advantage fades over ~3 days
-const MAX_RECENCY_BOOST = 0.15
+const MAX_RECENCY_BOOST = 0.45
 
 export function get_recency_boost(updated_at?: number): number {
     if (!updated_at) return 0
