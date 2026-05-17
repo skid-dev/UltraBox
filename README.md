@@ -28,28 +28,36 @@ A Chrome extension for the SchoolBox LMS with integrations for the Box of Books 
 
 ## Development
 
-Install dependencies using Bun:
+This project is built with [WXT](https://wxt.dev). Install dependencies and run the dev server (which launches Chrome with the extension auto-loaded):
 
 ```bash
 # install dependencies
-bun install
+npm install   # or: bun install
 
-# build
-bun run build
+# dev server with HMR
+npm run dev
+
+# production build (writes to .output/chrome-mv3/)
+npm run build
+
+# build a zip for Web Store submission (writes to .output/<name>-<ver>-chrome.zip)
+npm run zip
 ```
 
-For development mode with file watching:
+Firefox builds are also supported:
 
 ```bash
-bun run dev
+npm run dev:firefox
+npm run build:firefox
+npm run zip:firefox
 ```
 
-Load the `dist/` directory as an unpacked extension in Chrome to test.
+To manually load the production build as an unpacked extension in Chrome:
 
-1. Open Google Chrome and go to `chrome://extensions/`.
-2. Enable the Developer Mode toggle in the top right.
-3. Click on "load unpacked" in the toolbar that appears.
-4. Navigate to the `dist/` folder in the repository. If you don't see one, follow the instructions above to build the extension.
+1. Run `npm run build`.
+2. Open `chrome://extensions/`.
+3. Enable Developer Mode (top right).
+4. Click "Load Unpacked" and select the `.output/chrome-mv3/` folder.
 
 ## License
 

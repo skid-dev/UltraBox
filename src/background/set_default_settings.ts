@@ -1,6 +1,10 @@
 import { Settings } from "../types/settings"
 import { poll_feed } from "./pull_feed"
 
+// set_setting was moved to ./set_setting so content-script entrypoints
+// can import it without pulling in poll_feed / fast-xml-parser.
+export { set_setting } from "./set_setting"
+
 export async function init_settings(): Promise<void> {
     let current_settings = await chrome.storage.sync.get("settings")
 
@@ -31,21 +35,4 @@ export async function init_settings(): Promise<void> {
     await chrome.storage.sync.set({ settings: initial_settings })
 
     await poll_feed()
-}
-
-export async function set_setting<K extends keyof Settings>(
-    key: K,
-    value: Settings[K]
-): Promise<void> {
-    const current_settings = await chrome.storage.sync.get("settings")
-    if (!current_settings.settings) {
-        console.error("Settings not initialized yet.")
-        return
-    }
-
-    const new_settings = {
-        ...current_settings.settings,
-        [key]: value,
-    }
-    await chrome.storage.sync.set({ settings: new_settings })
 }

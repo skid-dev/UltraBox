@@ -1,4 +1,4 @@
-import { Settings } from "../types/settings"
+import { Settings } from "../../types/settings"
 
 const tabs = document.querySelectorAll(".tab-button") as NodeListOf<HTMLButtonElement>
 const tabContents = document.querySelectorAll(".tab-content") as NodeListOf<HTMLElement>

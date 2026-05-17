@@ -1,2 +1,7 @@
 node_modules/
 dist/
+.output/
+.wxt/
+web-ext.config.ts
+stats.html
+stats-*.json
