@@ -44,20 +44,34 @@ npm run build
 npm run zip
 ```
 
-Firefox builds are also supported:
-
-```bash
-npm run dev:firefox
-npm run build:firefox
-npm run zip:firefox
-```
-
 To manually load the production build as an unpacked extension in Chrome:
 
 1. Run `npm run build`.
 2. Open `chrome://extensions/`.
 3. Enable Developer Mode (top right).
 4. Click "Load Unpacked" and select the `.output/chrome-mv3/` folder.
+
+### Firefox development
+
+Firefox builds (MV2) are also supported. WXT normalizes the MV3 manifest into
+the MV2 shape automatically; the `chrome.scripting.*` API used by the background
+worker is supported in Firefox 102 and later.
+
+```bash
+# dev server with HMR, launches Firefox with the extension auto-loaded
+npm run dev:firefox
+
+# production build (writes to .output/firefox-mv2/)
+npm run build:firefox
+
+# zip for AMO submission (writes to .output/<name>-<ver>-firefox.zip)
+npm run zip:firefox
+```
+
+To customise the browser binary that `npm run dev` / `npm run dev:firefox`
+launches (e.g. point at Firefox Developer Edition), copy
+`web-ext.config.example.ts` to `web-ext.config.ts` and edit the paths. The
+`web-ext.config.ts` file is gitignored — keep it local to your machine.
 
 ## License
 

@@ -3,6 +3,9 @@ import { defineConfig } from "wxt"
 // See https://wxt.dev/api/config.html
 export default defineConfig({
     srcDir: "src",
+    // Firefox MV2 build: WXT normalizes host_permissions, web_accessible_resources,
+    // and action -> browser_action automatically. The `scripting` permission and
+    // `chrome.scripting.*` API are supported in Firefox MV2 (Firefox 102+).
     manifest: {
         name: "UltraBox",
         description: "A Chrome extension for SchoolBox.",
@@ -28,5 +31,11 @@ export default defineConfig({
                 matches: ["<all_urls>"],
             },
         ],
+    },
+    // UltraBox is an existing extension (currently distributed for Chrome). The
+    // Firefox data-collection consent requirement only applies to brand-new
+    // listings on AMO; suppress the build-time warning until we list there.
+    suppressWarnings: {
+        firefoxDataCollection: true,
     },
 })
