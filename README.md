@@ -59,6 +59,21 @@ To manually load the production build as an unpacked extension in Chrome:
 3. Enable Developer Mode (top right).
 4. Click "Load Unpacked" and select the `.output/chrome-mv3/` folder.
 
+### Testing
+
+Unit tests use [Vitest](https://vitest.dev) with WXT's `WxtVitest()` plugin, which wires up the `fakeBrowser` from `@webext-core/fake-browser` so `chrome.*` APIs work in-process. DOM globals (`document`, `window`, etc.) are provided by [`happy-dom`](https://github.com/capricorn86/happy-dom). Test files live alongside the code as `*.test.ts`.
+
+```bash
+# run the full suite once
+npm run test
+
+# re-run on file changes
+npm run test:watch
+
+# collect coverage with v8
+npm run test:coverage
+```
+
 ## License
 
 - MIT license. Do whatever you want idrc
