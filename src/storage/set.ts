@@ -1,47 +1,39 @@
 import { ItemRecord } from "../types/item_record"
+import { get_news_channel_items, set_news_channel_items } from "./items"
 
 export async function add_channel(channel_name: string): Promise<void> {
-    const channel_key = `news_channel_${channel_name}`
-    await chrome.storage.local.set({ [channel_key]: [] })
+    await set_news_channel_items(channel_name, [])
 }
 
 export async function ensure_channel_exists(channel_name: string): Promise<void> {
-    const channel_key = `news_channel_${channel_name}`
-    const channel_data = await chrome.storage.local.get(channel_key)
-
-    // Check if the channel already exists
-    if (!channel_data[channel_key]) {
+    const channel_items = await get_news_channel_items(channel_name)
+    if (!channel_items) {
         await add_channel(channel_name)
     }
 }
 
 export async function clear_channel(channel_name: string): Promise<void> {
-    const channel_key = `news_channel_${channel_name}`
-    await chrome.storage.local.set({ [channel_key]: [] })
+    await set_news_channel_items(channel_name, [])
 }
 
-export async function add_item_to_channel(channel_name: string, item: ItemRecord): Promise<boolean> {
-    const channel_key = `news_channel_${channel_name}`
-    const channel_data = await chrome.storage.local.get(channel_key)
-
-    // Check if the channel exists
-    if (!channel_data[channel_key]) {
+export async function add_item_to_channel(
+    channel_name: string,
+    item: ItemRecord
+): Promise<boolean> {
+    const channel_items = await get_news_channel_items(channel_name)
+    if (!channel_items) {
         console.error(`Channel ${channel_name} does not exist.`)
         return false
     }
 
-    const channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
-
     // Check if the item already exists in the channel
-    const item_exists = channel_items.some(existing_item => existing_item.guid === item.guid)
-    if (item_exists) {
+    if (channel_items.some(existing_item => existing_item.guid === item.guid)) {
         console.error(`Item with GUID ${item.guid} already exists in channel ${channel_name}.`)
-        return false // Item already exists, do not add
+        return false
     }
 
-    // Add the new item to the channel
     channel_items.push(item)
-    await chrome.storage.local.set({ [channel_key]: channel_items })
+    await set_news_channel_items(channel_name, channel_items)
     return true
 }
 
@@ -50,120 +42,92 @@ export async function update_item_properties(
     item_guid: string,
     new_properties: Partial<ItemRecord>
 ): Promise<void> {
-    const channel_key = `news_channel_${channel_name}`
-    const channel_data = await chrome.storage.local.get(channel_key)
-
-    // Check if the channel exists
-    if (!channel_data[channel_key]) {
+    const channel_items = await get_news_channel_items(channel_name)
+    if (!channel_items) {
         console.error(`Channel ${channel_name} does not exist.`)
         return
     }
 
-    let channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
+    const updated = channel_items.map(item =>
+        item.guid === item_guid ? { ...item, ...new_properties } : item
+    )
 
-    // Update the item properties
-    channel_items = channel_items.map(item => {
-        if (item.guid === item_guid) {
-            return { ...item, ...new_properties }
-        }
-        return item
-    })
-
-    await chrome.storage.local.set({ [channel_key]: channel_items })
+    await set_news_channel_items(channel_name, updated)
 }
 
 // update item view count and last viewed time
-export async function update_item_vc_and_lvt(channel_name: string, item_guid: string): Promise<number | null> {
-    const channel_key = `news_channel_${channel_name}`
-    const channel_data = await chrome.storage.local.get(channel_key)
-
-    // Check if the channel exists
-    if (!channel_data[channel_key]) {
+export async function update_item_vc_and_lvt(
+    channel_name: string,
+    item_guid: string
+): Promise<number | null> {
+    const channel_items = await get_news_channel_items(channel_name)
+    if (!channel_items) {
         console.error(`Channel ${channel_name} does not exist.`)
         return null
     }
 
-    let channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
-    
-    // Increment the view count for the specified item
     let updated_view_count: number | null = null
-    channel_items = channel_items.map(item => {
-        if (item.guid === item_guid) {
-            const new_view_count = (item.view_count || 0) + 1
-            updated_view_count = new_view_count
-            return { ...item, view_count: new_view_count, last_viewed: Date.now() }
-        }
-        return item
+    const updated = channel_items.map(item => {
+        if (item.guid !== item_guid) return item
+        const new_view_count = (item.view_count || 0) + 1
+        updated_view_count = new_view_count
+        return { ...item, view_count: new_view_count, last_viewed: Date.now() }
     })
-    await chrome.storage.local.set({ [channel_key]: channel_items })
+    await set_news_channel_items(channel_name, updated)
     return updated_view_count
 }
 
-export async function increment_item_bounce_count(channel_name: string, item_guid: string): Promise<void> {
-    const channel_key = `news_channel_${channel_name}`
-    const channel_data = await chrome.storage.local.get(channel_key)
-
-    // Check if the channel exists
-    if (!channel_data[channel_key]) {
+export async function increment_item_bounce_count(
+    channel_name: string,
+    item_guid: string
+): Promise<void> {
+    const channel_items = await get_news_channel_items(channel_name)
+    if (!channel_items) {
         console.error(`Channel ${channel_name} does not exist.`)
         return
     }
 
-    let channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
-    
-    // Increment the bounce count for the specified item
-    channel_items = channel_items.map(item => {
-        if (item.guid === item_guid) {
-            const new_bounce_count = (item.bounce_count || 0) + 1
-            return { ...item, bounce_count: new_bounce_count }
-        }
-        return item
+    const updated = channel_items.map(item => {
+        if (item.guid !== item_guid) return item
+        return { ...item, bounce_count: (item.bounce_count || 0) + 1 }
     })
-    await chrome.storage.local.set({ [channel_key]: channel_items })
+    await set_news_channel_items(channel_name, updated)
 }
 
-export async function add_revision_history_entry(channel_name: string, item_guid: string, rev_id: string): Promise<string[]> {
-    const channel_key = `news_channel_${channel_name}`
-    const channel_data = await chrome.storage.local.get(channel_key)
-
-    // Check if the channel exists
-    if (!channel_data[channel_key]) {
+export async function add_revision_history_entry(
+    channel_name: string,
+    item_guid: string,
+    rev_id: string
+): Promise<string[]> {
+    const channel_items = await get_news_channel_items(channel_name)
+    if (!channel_items) {
         console.error(`Channel ${channel_name} does not exist.`)
         return []
     }
 
-    let channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
-    
-    // Add the revision ID to the item's revision history
     let updated_rev_history: string[] = []
-    channel_items = channel_items.map(item => {
-        if (item.guid === item_guid) {
-            const existing_history = item.rev_history_uuids || []
-            const new_history = [...existing_history, rev_id]
-            updated_rev_history = new_history
-            return { ...item, rev_history_uuids: new_history }
-        }
-        return item
+    const updated = channel_items.map(item => {
+        if (item.guid !== item_guid) return item
+        const new_history = [...(item.rev_history_uuids || []), rev_id]
+        updated_rev_history = new_history
+        return { ...item, rev_history_uuids: new_history }
     })
-    await chrome.storage.local.set({ [channel_key]: channel_items })
+    await set_news_channel_items(channel_name, updated)
     return updated_rev_history
 }
 
-export async function remove_item_from_channel(channel_name: string, item_guid: string): Promise<void> {
-    const channel_key = `news_channel_${channel_name}`
-    const channel_data = await chrome.storage.local.get(channel_key)
-
-    // Check if the channel exists
-    if (!channel_data[channel_key]) {
+export async function remove_item_from_channel(
+    channel_name: string,
+    item_guid: string
+): Promise<void> {
+    const channel_items = await get_news_channel_items(channel_name)
+    if (!channel_items) {
         console.error(`Channel ${channel_name} does not exist.`)
         return
     }
 
-    let channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
-
-    // Remove the item from the channel
-    channel_items = channel_items.filter(item => item.guid !== item_guid)
-    await chrome.storage.local.set({ [channel_key]: channel_items })
+    const updated = channel_items.filter(item => item.guid !== item_guid)
+    await set_news_channel_items(channel_name, updated)
 }
 
 export async function add_if_not_exists(
@@ -171,23 +135,17 @@ export async function add_if_not_exists(
     item_guid: string,
     item: ItemRecord
 ): Promise<boolean> {
-    const channel_key = `news_channel_${channel_name}`
-    const channel_data = await chrome.storage.local.get(channel_key)
-
-    // Check if the channel exists
-    if (!channel_data[channel_key]) {
+    const channel_items = await get_news_channel_items(channel_name)
+    if (!channel_items) {
         console.error(`Channel ${channel_name} does not exist.`)
         return false
     }
 
-    let channel_items: ItemRecord[] = channel_data[channel_key] as ItemRecord[] || []
+    if (channel_items.some(existing_item => existing_item.guid === item_guid)) {
+        return false
+    }
 
-    // Check if the item already exists in the channel
-    const item_exists = channel_items.some(existing_item => existing_item.guid === item_guid)
-    if (item_exists) return false // Item already exists, do not add
-
-    // Add the new item to the channel
     channel_items.push(item)
-    await chrome.storage.local.set({ [channel_key]: channel_items })
+    await set_news_channel_items(channel_name, channel_items)
     return true
 }

@@ -1,25 +1,14 @@
 import { RecentsEntry } from "../types/recents"
-
-const RECENTS_KEY = "recent_pages"
-
-export async function ensure_recents_exists(): Promise<void> {
-    const data = await chrome.storage.local.get(RECENTS_KEY)
-    if (!data[RECENTS_KEY]) {
-        await chrome.storage.local.set({ [RECENTS_KEY]: [] })
-    }
-}
+import { recents_item } from "./items"
 
 export async function add_url_to_recents(url: string, name: string): Promise<void> {
-    await ensure_recents_exists()
-
     // clean URL (remove media queries and page fragments)
     url = url.split("#")[0].split("?")[0]
 
-    let data = await chrome.storage.local.get(RECENTS_KEY)
-    let recents: RecentsEntry[] = data[RECENTS_KEY] as RecentsEntry[] || []
+    let recents = await recents_item.getValue()
     const now = Date.now()
-    
-    let existing_entry: RecentsEntry | undefined = recents.find(entry => entry.url === url)
+
+    const existing_entry: RecentsEntry | undefined = recents.find(entry => entry.url === url)
     if (existing_entry) {
         existing_entry.viewed_count += 1
         existing_entry.last_viewed_timestamp = now
@@ -39,17 +28,13 @@ export async function add_url_to_recents(url: string, name: string): Promise<voi
     // sort by last viewed timestamp (most recent first)
     recents.sort((a, b) => b.last_viewed_timestamp - a.last_viewed_timestamp)
 
-    await chrome.storage.local.set({ [RECENTS_KEY]: recents })
+    await recents_item.setValue(recents)
 }
 
 export async function get_recents(): Promise<RecentsEntry[]> {
-    await ensure_recents_exists()
-
-    let data = await chrome.storage.local.get(RECENTS_KEY)
-    let recents: RecentsEntry[] = data[RECENTS_KEY] as RecentsEntry[] || []
-    return recents
+    return await recents_item.getValue()
 }
 
 export async function clear_recents(): Promise<void> {
-    await chrome.storage.local.set({ [RECENTS_KEY]: [] })
+    await recents_item.setValue([])
 }

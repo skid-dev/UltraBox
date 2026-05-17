@@ -1,4 +1,5 @@
 import { Settings } from "../types/settings"
+import { settings_item } from "../storage/items"
 import { poll_feed } from "./pull_feed"
 
 // set_setting was moved to ./set_setting so content-script entrypoints
@@ -6,9 +7,9 @@ import { poll_feed } from "./pull_feed"
 export { set_setting } from "./set_setting"
 
 export async function init_settings(): Promise<void> {
-    let current_settings = await chrome.storage.sync.get("settings")
+    const current_settings = await settings_item.getValue()
 
-    if (current_settings.settings) {
+    if (current_settings) {
         // settings already exist, no need to set defaults
         await poll_feed()
         return
@@ -32,7 +33,7 @@ export async function init_settings(): Promise<void> {
         record_post_history: true,
         record_setting_active: false,
     }
-    await chrome.storage.sync.set({ settings: initial_settings })
+    await settings_item.setValue(initial_settings)
 
     await poll_feed()
 }
