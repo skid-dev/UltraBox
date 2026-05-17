@@ -1,18 +1,18 @@
 import { Settings } from "../types/settings"
+import { settings_item } from "../storage/items"
 
 export async function set_setting<K extends keyof Settings>(
     key: K,
     value: Settings[K]
 ): Promise<void> {
-    const current_settings = await chrome.storage.sync.get("settings")
-    if (!current_settings.settings) {
+    const current_settings = await settings_item.getValue()
+    if (!current_settings) {
         console.error("Settings not initialized yet.")
         return
     }
 
-    const new_settings = {
-        ...current_settings.settings,
+    await settings_item.setValue({
+        ...current_settings,
         [key]: value,
-    }
-    await chrome.storage.sync.set({ settings: new_settings })
+    })
 }
