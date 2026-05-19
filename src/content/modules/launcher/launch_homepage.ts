@@ -36,6 +36,8 @@ async function inject_launcher(): Promise<void> {
 
     if (settings?.reduce_timetable_width) {
         launcher_div.style.width = "min(900px, 90%)"
+        launcher_div.style.marginLeft = "auto"
+        launcher_div.style.marginRight = "auto"
     }
 
     // move elements on the main page to this new launcher div
